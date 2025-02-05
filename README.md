@@ -28,6 +28,7 @@
 2. Install dependencies:
    ```sh
    npm install
+   npm i nodemon
    ```
 3. Start the server using nodemon:
    ```sh
