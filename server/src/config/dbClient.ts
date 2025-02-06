@@ -1,5 +1,5 @@
 import { Dialect, Sequelize } from "sequelize";
-import { DB_CONFIG } from "./dbconfig.js";
+import { DB_CONFIG } from "./dbconfig";
 
 // Database configuration
 export const sequelize = new Sequelize(DB_CONFIG.database, DB_CONFIG.username, DB_CONFIG.password, {
