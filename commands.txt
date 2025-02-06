@@ -1,0 +1,29 @@
+
+
+git status
+
+step 1 =>
+
+git add .  
+move your all changes to staged
+
+step 2 => 
+
+git commit -m <message> "clerk API implementation"
+to add commit message 
+
+step 3 =>
+
+git push origin <branch-name>
+
+
+
+whenever you raise PUll request 
+
+step 1
+git pull origin master 
+
+
+
+
+
