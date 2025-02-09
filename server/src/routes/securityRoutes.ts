@@ -17,7 +17,7 @@ securityRoutes.post('/signup', async (req: any, res: any) => {
 
     const userExist = await User.findOne({ where: { email } });
     if (userExist) {
-      return res.status(400).send({ message: "User with that email already exists." });
+      return res.status(409).send({ message: "User with that email already exists." });
     }
 
     const saltRounds = 10;
