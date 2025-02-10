@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import { DB_URI, } from "./dbconfig";
+import User from "../models/Users";
 
 // Database configuration
 // export const sequelize = new Sequelize(DB_CONFIG.database, DB_CONFIG.username, DB_CONFIG.password, {
@@ -28,7 +29,7 @@ export const sequelize = new Sequelize(DB_URI, {
 // Test connection function
 export default async function testConnection() {
   try {
-    await sequelize.authenticate();
+    await sequelize.authenticate(); 
     console.log('Connection established successfully.');
   } catch (error) {
     console.error('Unable to connect to database:', error);
