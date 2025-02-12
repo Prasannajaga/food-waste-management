@@ -3,6 +3,7 @@ import { userRoutes} from "./routes/userRoutes";
 import { securityRoutes} from "./routes/securityRoutes";
 import testConnection from "./config/dbClient";
 
+
 const app = express(); 
 
 

@@ -53,7 +53,7 @@ securityRoutes.post('/login', async (req: any, res: any) => {
     if (!email || !password) {
       return res.status(400).send({ message: "Email and password are required." });
     }
-
+  
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(400).send({ message: "Invalid email or password." });
@@ -78,3 +78,4 @@ securityRoutes.post('/login', async (req: any, res: any) => {
     return res.status(500).send({ message: "Server error" });
   }
 });
+
