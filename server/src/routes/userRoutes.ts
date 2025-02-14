@@ -1,21 +1,59 @@
-import { Router } from "express";
-import { BaseController } from "../config/baseController";
-import User from "../models/Users";
+// src/routes/userRoutes.ts
+import { Router } from 'express';
+import  User  from '../models/Users';
 
+const router = Router();
 
-export const userRoutes = Router();
-const baseController = new BaseController();
-
-
-userRoutes.get('/:id' , async (req , res) => {
-   const userId = req.params.id; 
-   const d  = await baseController.get(User , userId);
-   console.log("response data " , d);
-   res.send(d);
+// Create
+router.post('/users', async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating user' });
+  }
 });
 
-userRoutes.get('/findAll' , async (req , res) => {
-   const d  = await baseController.getAll(User);
-   console.log("response data " , d);
-   res.send(d);
+// Read
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching users' });
+  }
 });
+
+// Update
+router.put('/users/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await User.findByPk(id);
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      await user.update(req.body);
+      res.json(user);
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating user' });
+  }
+});
+
+// Delete
+router.delete('/users/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await User.findByPk(id);
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      await user.destroy();
+      res.json({ message: 'User deleted successfully' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting user' });
+  }
+});
+
+export default router;
