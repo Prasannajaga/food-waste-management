@@ -1,9 +1,15 @@
-import { SignUp } from "@clerk/nextjs";
+"use client"
+import { SignUp, useClerk } from "@clerk/nextjs";  
 
 export default function Page() {
+        
     return (
         <div className="flex justify-center p-5">
-            <SignUp />
+            <SignUp afterSignOutUrl="/landingpage"  appearance={{
+                elements : {
+                    formButtonPrimary : "bg-primary shadow-none",
+                }
+            }} />
         </div>
     )
 }

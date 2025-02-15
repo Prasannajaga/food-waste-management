@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 
 export const securityRoutes = Router();
 const baseController = new BaseController();
-export default securityRoutes;
+// export default securityRoutes;
 
 securityRoutes.post('/signup', async (req: any, res: any) => {
   try {
