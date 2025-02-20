@@ -1,75 +1,46 @@
-// src/routes/userRoutes.ts
-import { Router } from 'express';
-import  User  from '../models/Users';
+import express from 'express';
+import {
+    createUser,
+    getAllUsers,
+    getUserById,
+    updateUser,
+    deleteUser,
+} from '../controllers/userController';
+import { BaseController } from '../config/baseController';
+import User from '../models/Users';
 
-const router = Router();
+const router = express.Router();
+const baseController = new BaseController();
 
-// Create
-router.post('/users', async (req, res) => {
-  // Try to create a new user with the data sent in the request body
-  try {
-    const user = await User.create(req.body);
-    // If successful, return the newly created user
-    res.json(user);
-  } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
-    res.status(500).json({ message: 'Error creating user' });
-  }
-});
+// CRUD routes for Users
+router.post('/user', createUser);
+router.get('/user', getAllUsers);
+router.get('/users/:id', getUserById);
+router.put('/users/:id', updateUser);
+router.delete('/users/:id', deleteUser);
 
-// Read
-router.get('/users', async (req, res) => {
-  // Try to fetch all users from the database
-  try {
-    const users = await User.findAll();
-    // If successful, return all the users
-    res.json(users);
-  } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
-    res.status(500).json({ message: 'Error fetching users' });
-  }
-});
-
-// Update
-router.put('/users/:id', async (req, res) => {
-  // Try to find the user with the id sent in the request params
-  try {
-    const id = req.params.id;
-    const user = await User.findByPk(id);
-    // If the user is not found, return a 404 status code and a JSON object with an error message
-    if (!user) {
-      res.status(404).json({ message: 'User not found' });
-    } else {
-      // If the user is found, try to update it with the data sent in the request body
-      await user.update(req.body);
-      // If successful, return the updated user
-      res.json(user);
+// Additional routes using BaseController
+router.get('/:id', async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const user = await baseController.get(User, userId);
+        if (user) {
+            res.status(200).json(user);
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user', error });
     }
-  } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
-    res.status(500).json({ message: 'Error updating user' });
-  }
 });
 
-// Delete
-router.delete('/users/:id', async (req, res) => {
-  // Try to find the user with the id sent in the request params
-  try {
-    const id = req.params.id;
-    const user = await User.findByPk(id);
-    // If the user is not found, return a 404 status code and a JSON object with an error message
-    if (!user) {
-      res.status(404).json({ message: 'User not found' });
-    } else {
-      // If the user is found, try to delete it
-      await user.destroy();
-      // If successful, return a JSON object with a success message
-      res.json({ message: 'User deleted successfully' });
+router.get('/findAll', async (req, res) => {
+    try {
+        const users = await baseController.getAll(User);
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching users', error });
     }
-  } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
-    res.status(500).json({ message: 'Error deleting user' });
-  }
 });
 
 export default router;
