@@ -4,8 +4,7 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
+    SidebarGroupContent, 
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
@@ -13,6 +12,7 @@ import {
   } from "@/components/ui/sidebar";
 import { Calendar, Inbox, Search, Settings , Home} from "lucide-react"; 
 import { useState } from "react";
+import Link from 'next/link';
 
 
   
@@ -22,31 +22,31 @@ export function AppSidebar() {
     const [items, setItems] = useState([
         {
           title: "Home",
-          url: "#",
+          url: "/landingpage",
           icon: Home,
           active : true
         },
         {
-          title: "Inbox",
-          url: "#",
+          title: "My Contribution",
+          url: "/contribution",
           icon: Inbox,
           active : false
         },
         {
-          title: "Calendar",
-          url: "#",
+          title: "Rewards",
+          url: "/rewards",
           icon: Calendar,
           active : false
         },
         {
-          title: "Search",
-          url: "#",
+          title: "Message",
+          url: "/message",
           icon: Search,
           active : false
         },
         {
           title: "Settings",
-          url: "#",
+          url: "/settings",
           icon: Settings,
           active : false
         },
@@ -70,10 +70,10 @@ export function AppSidebar() {
                 {items.map((item) => (
                     <SidebarMenuItem key={item.title} onClick={() => onToggle(item.title)}>
                     <SidebarMenuButton asChild isActive={item.active}>
-                        <a href={item.url}>
+                        <Link href={item.url}>
                         <item.icon />
                         <span>{item.title}</span>
-                        </a>
+                        </Link>
                     </SidebarMenuButton>
                     </SidebarMenuItem>
                 ))}

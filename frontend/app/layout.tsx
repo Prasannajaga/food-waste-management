@@ -44,8 +44,8 @@ export default function RootLayout({
             <SidebarProvider>
                <main className="flex gap-2">
                    <AppSidebar></AppSidebar>
-                   <article>
-                      <SidebarTrigger />
+                    <SidebarTrigger />
+                   <article className="w-full">
                       {children}
                    </article>
                </main>

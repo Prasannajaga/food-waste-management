@@ -6,10 +6,10 @@ const router = Router();
 
 // Create
 // This route creates a new claim and returns the newly created claim
-router.post('/claims', async (req, res) => {
+router.post('/create', async (req, res) => {
   try {
     // Create a new claim with the data sent in the request body
-    const claim = await Claim.create(req.body);
+    const claim = await Claim.create();
     // Return the newly created claim
     res.json(claim);
   } catch (error) {
