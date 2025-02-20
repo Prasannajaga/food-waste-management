@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
+  ClerkProvider, 
+  SignedIn, 
   UserButton,
 } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "./landingpage/sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +40,17 @@ export default function RootLayout({
                 <UserButton />
               </div>
             </SignedIn>
-            {children}
+
+            <SidebarProvider>
+               <main className="flex gap-2">
+                   <AppSidebar></AppSidebar>
+                    <SidebarTrigger />
+                   <article className="w-full">
+                      {children}
+                   </article>
+               </main>
+            </SidebarProvider>
+
         </body>
       </html>
     </ClerkProvider>
