@@ -1,21 +1,46 @@
-import { Router } from "express";
-import { BaseController } from "../config/baseController";
-import User from "../models/Users";
+import express from 'express';
+import {
+    createUser,
+    getAllUsers,
+    getUserById,
+    updateUser,
+    deleteUser,
+} from '../controllers/userController';
+import { BaseController } from '../config/baseController';
+import User from '../models/Users';
 
-
-export const userRoutes = Router();
+const router = express.Router();
 const baseController = new BaseController();
 
+// CRUD routes for Users
+router.post('/user', createUser);
+router.get('/user', getAllUsers);
+router.get('/users/:id', getUserById);
+router.put('/users/:id', updateUser);
+router.delete('/users/:id', deleteUser);
 
-userRoutes.get('/:id' , async (req , res) => {
-   const userId = req.params.id; 
-   const d  = await baseController.get(User , userId);
-   console.log("response data " , d);
-   res.send(d);
+// Additional routes using BaseController
+router.get('/:id', async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const user = await baseController.get(User, userId);
+        if (user) {
+            res.status(200).json(user);
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user', error });
+    }
 });
 
-userRoutes.get('/findAll' , async (req , res) => {
-   const d  = await baseController.getAll(User);
-   console.log("response data " , d);
-   res.send(d);
+router.get('/findAll', async (req, res) => {
+    try {
+        const users = await baseController.getAll(User);
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching users', error });
+    }
 });
+
+export default router;
