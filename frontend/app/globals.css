@@ -86,3 +86,22 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.btn-default{
+  @apply bg-white border-primary text-primary2
+}
+
+.flex-primary{
+  @apply flex gap-2 items-center
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

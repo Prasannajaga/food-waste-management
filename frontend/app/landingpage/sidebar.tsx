@@ -69,7 +69,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                 {items.map((item) => (
                     <SidebarMenuItem key={item.title} onClick={() => onToggle(item.title)}>
-                    <SidebarMenuButton asChild isActive={item.active}>
+                    <SidebarMenuButton  asChild isActive={item.active} className="data-[active=true]:bg-primary/80 data-[active=true]:text-white">
                         <Link href={item.url}>
                         <item.icon />
                         <span>{item.title}</span>

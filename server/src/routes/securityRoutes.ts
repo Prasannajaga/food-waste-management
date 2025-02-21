@@ -11,7 +11,7 @@ securityRoutes.post('/signup', async (req: any, res: any) => {
   try {
     const { name, email, phone, password } = req.body;
     
-    if (!name || !email || !password) {
+    if (!email || !password) {
       return res.status(400).send({ message: "Name, email, and password are required." });
     }
 
@@ -20,14 +20,14 @@ securityRoutes.post('/signup', async (req: any, res: any) => {
       return res.status(409).send({ message: "User with that email already exists." });
     }
 
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const saltRounds = 10; 
+    const namePrefix = email.split("@")[0] + "#01";
 
     const newUser = await baseController.post(User, { 
-      name:name, 
+      name: namePrefix, 
       email:email, 
-      phone: phone || null, 
-      password_hash: hashedPassword,  
+      phone: phone ?? null, 
+      password_hash: password,  
       created_at: new Date(),      
       updated_at: new Date()
     });

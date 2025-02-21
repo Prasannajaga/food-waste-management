@@ -10,9 +10,16 @@ export default {
   theme: {
   	extend: {
   		backgroundColor: {
-  			primary: '#059669'
+  			primary: '#059669',
   		},
+		borderColor : {
+  			primary: '#059669', 
+		},
+		stroke : {
+			primary: '#059669', 
+		},
   		colors: {
+			primary2 : "#059669",
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
   				foreground: 'hsl(var(--primary-foreground))'

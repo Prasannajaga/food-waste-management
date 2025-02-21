@@ -1,8 +1,9 @@
 // src/routes/userRoutes.ts
 import { Router } from 'express';
-import  User  from '../models/Users';
+import  User  from '../models/Users';  
 
-const router = Router();
+
+const router = Router();  
 
 // Create
 router.post('/create', async (req, res) => {
