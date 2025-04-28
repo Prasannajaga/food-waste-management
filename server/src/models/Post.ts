@@ -24,11 +24,11 @@ const Post = sequelize.define("Post", {
   },
   lat: {
     type: DataTypes.DOUBLE,
-    allowNull: false,
+    allowNull: true,
   },
   lng: {
     type: DataTypes.DOUBLE,
-    allowNull: false,
+    allowNull: true,
   },
   status: {
     type: DataTypes.STRING(20),

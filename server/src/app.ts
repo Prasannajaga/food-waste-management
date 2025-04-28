@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import express, { Request, Response } from "express";
+import express from "express";
 import  userRoutes from "./routes/userRoutes"; 
 import { securityRoutes} from "./routes/securityRoutes"; 
 import testConnection from "./config/dbClient"; 
@@ -28,13 +28,14 @@ app.use('/api/claims', claimRoutes);
 // Use comment routes for /api/comments endpoint
 app.use('/api/comments', commentRoutes);
 
-
-app.get("/check", (req,res) =>{
+ 
+app.get("/check", (req,res) =>{ 
   res.send("SUCESS");
 })
 // Start server on port 5000 and log message to console
 app.listen(5000, () => {
   testConnection()
-  console.log("Server is running on port 5000");
+  console.log("Server is running on port 5000"); 
 });
 
+export default app;

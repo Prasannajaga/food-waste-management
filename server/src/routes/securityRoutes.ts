@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { BaseController } from "../config/baseController";
 import User from "../models/Users";
-import bcrypt from "bcrypt";
+import bcrypt from "bcrypt"; 
 
 export const securityRoutes = Router();
 const baseController = new BaseController();
@@ -9,7 +9,7 @@ const baseController = new BaseController();
 
 securityRoutes.post('/signup', async (req: any, res: any) => {
   try {
-    const { name, email, phone, password } = req.body;
+    const {  email, phone, password } = req.body;
     
     if (!email || !password) {
       return res.status(400).send({ message: "Name, email, and password are required." });

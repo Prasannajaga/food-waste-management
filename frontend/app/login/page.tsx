@@ -16,11 +16,11 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs"
-import { useRouter } from "next/compat/router";
+} from "@/components/ui/tabs";
+import { useRouter } from 'next/navigation';
 import { useState } from "react"
 
-export default function TabsDemo() {
+export default function Login() {
 
   const router = useRouter();
 
@@ -36,10 +36,18 @@ export default function TabsDemo() {
         console.log("response -> " , res);
         if(res?.user!=null){
           if(router){
+            localStorage.setItem("loggedIn" , "true")
             router.push("/landingpage")
           }
         }
       });
+  }
+
+  function loginUser(e:any){
+      localStorage.setItem('loggedIn' , "true");
+      if(router){
+        router.push("/landingpage");
+      }
   }
 
 
@@ -77,7 +85,7 @@ export default function TabsDemo() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button>Sign In</Button>
+              <Button onClick={loginUser}>Sign In</Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -108,3 +116,6 @@ export default function TabsDemo() {
     </div>
   )
 }
+
+
+

@@ -1,0 +1,9 @@
+  {
+    "data" : [
+    { "postId": 1, "postTitle": "Introduction to Next.js" },
+    { "postId": 2, "postTitle": "Understanding JavaScript Closures" },
+    { "postId": 3, "postTitle": "Mastering React Hooks" },
+    { "postId": 4, "postTitle": "Building a Full-Stack App with Next.js" },
+    { "postId": 5, "postTitle": "Deploying Apps on Vercel" }
+  ]
+}

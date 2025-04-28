@@ -11,11 +11,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { BellDot, Clock2, CookingPot, Heart, Mail, MapPin, MessageCircleMore, Share2 } from "lucide-react";
+import { BellDot, Clock2, Heart, MapPin, MessageCircleMore, Share2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react"
 import { CommandDialogDemo } from "./command";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"; 
 import { SkeletonDemo } from "./customSkeleton";
+import PostModal from "../post/postModal";
 
 
 
@@ -38,7 +39,7 @@ export default function LandingPage() {
 
         setTimeout(() => {
             setLoading(false);  
-        }, 4000);
+        }, 1000);
 
         
     }, []);
@@ -50,7 +51,8 @@ export default function LandingPage() {
 
     return (
         <> 
-            <section className="grid grid-cols-[70%_30%] gap-4">
+            <div className="grid  md:grid-cols-1 xl:grid-cols-[70%_30%] gap-4">
+
                 <section>   
                     {isLoading ? (
                     <>
@@ -76,8 +78,9 @@ export default function LandingPage() {
                                 </CardDescription>
                             </CardHeader>
                             <CardFooter className="flex gap-2 justify-end">
-                                <Button className="btn-default border hover:text-white"><Mail /> Post</Button>
-                                <Button><CookingPot />Donate Food</Button>
+                                {/* <Button className="btn-default border hover:text-white"><Mail /> Post</Button> */}
+                                {/* <Button>Donate Food</Button> */}
+                                <PostModal></PostModal>
                             </CardFooter>
                         </Card>
 
@@ -147,7 +150,7 @@ export default function LandingPage() {
 
                 </section>
 
-                <section className="hidden sm:hidden md:block lg:block xl:block">
+                <section className="hidden sm:hidden md:hidden lg:block xl:block">
 
                     {isLoading ? 
                     <>
@@ -196,7 +199,7 @@ export default function LandingPage() {
                 <CommandDialogDemo data={searchData}></CommandDialogDemo>
 
 
-            </section>
+            </div>
 
         </>
     )

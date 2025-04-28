@@ -6,12 +6,19 @@ const router = Router();
 
 // Create
 // This route creates a new post and returns the newly created post
-router.post('/posts', async (req, res) => {
-  try {
+router.post('/', async (req, res) => {
+  try { 
+    const payload = req.body;
+
+    if(!payload.user_id){
+      res.status(404).json({message : "userId is required"});
+    }
+
+
     // Create a new post with the data sent in the request body
-    const post = await Post.create(req.body);
+    const post = await Post.create(payload);
     // Return the newly created post
-    res.json(post);
+    res.status(200).json(post);
   } catch (error) {
     // If there's an error, return a 500 status code and a JSON object with an error message
     res.status(500).json({ message: 'Error creating post' });
@@ -20,7 +27,7 @@ router.post('/posts', async (req, res) => {
 
 // Read
 // This route fetches all posts from the database and returns them
-router.get('/posts', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     // Fetch all posts from the database
     const posts = await Post.findAll();
@@ -34,7 +41,7 @@ router.get('/posts', async (req, res) => {
 
 // Read by ID
 // This route fetches a post by its id and returns it
-router.get('/posts/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     // Get the id of the post from the request params
     const id = req.params.id;
@@ -55,7 +62,7 @@ router.get('/posts/:id', async (req, res) => {
 
 // Update
 // This route updates a post and returns the updated post
-router.put('/posts/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     // Get the id of the post from the request params
     const id = req.params.id;
@@ -78,7 +85,7 @@ router.put('/posts/:id', async (req, res) => {
 
 // Delete
 // This route deletes a post and returns a success message
-router.delete('/posts/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     // Get the id of the post from the request params
     const id = req.params.id;
