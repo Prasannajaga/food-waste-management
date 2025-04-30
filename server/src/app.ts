@@ -6,6 +6,7 @@ import testConnection from "./config/dbClient";
 import  postRoutes  from "./routes/postRoutes"; 
 import  claimRoutes  from "./routes/claimRoutes"; 
 import  commentRoutes  from "./routes/commentRoutes"; 
+import  likeRoutes from "./routes/likeRouters"; 
 import cors from "cors";
 
 // Create express app
@@ -16,17 +17,13 @@ const app = express();
 // Use express json middleware to parse json bodies
 app.use(express.json()); 
 app.use(cors());
-
-// Use user routes for /users endpoint
-app.use("/api/users", userRoutes);
-// Use security routes for /api/auth endpoint
-app.use("/api/auth", securityRoutes);
-// Use post routes for /api/posts endpoint
-app.use('/api/posts', postRoutes);
-// Use claim routes for /api/claims endpoint
-app.use('/api/claims', claimRoutes);
-// Use comment routes for /api/comments endpoint
-app.use('/api/comments', commentRoutes);
+ 
+app.use("/api/users", userRoutes); 
+app.use("/api/auth", securityRoutes); 
+app.use('/api/posts', postRoutes); 
+app.use('/api/claims', claimRoutes); 
+app.use('/api/post/likes', likeRoutes); 
+app.use('/api/post/comments', commentRoutes);
 
  
 app.get("/check", (req,res) =>{ 

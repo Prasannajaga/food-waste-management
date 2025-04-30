@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { BaseController } from "../config/baseController";
-import User from "../models/Users";
-import bcrypt from "bcrypt"; 
+import User from "../models/Users"; 
 
 export const securityRoutes = Router();
 const baseController = new BaseController();
@@ -21,14 +20,14 @@ securityRoutes.post('/signup', async (req: any, res: any) => {
     }
 
     const saltRounds = 10; 
-    const namePrefix = email.split("@")[0] + "#01";
-
+    const namePrefix = email.split("@")[0]; 
+    
     const newUser = await baseController.post(User, { 
       name: namePrefix, 
       email:email, 
       phone: phone ?? null, 
       password_hash: password,  
-      created_at: new Date(),      
+      created_at: new Date(),       
       updated_at: new Date()
     });
 
@@ -55,11 +54,12 @@ securityRoutes.post('/login', async (req: any, res: any) => {
     }
 
     const user = await User.findOne({ where: { email } });
-    if (!user) {
+     
+    if (!user?.dataValues.user_id) {
       return res.status(400).send({ message: "Invalid email or password." });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.get("password_hash") as string);
+    const isPasswordValid =  password === user.get("password_hash");
     if (!isPasswordValid) {
       return res.status(400).send({ message: "Invalid email or password." });
     }
@@ -67,7 +67,7 @@ securityRoutes.post('/login', async (req: any, res: any) => {
     return res.status(200).send({
       message: "Login successful",
       user: {
-        user_id: user.get("user_id"),
+        userId: user.get("user_id"),
         name: user.get("name"),
         email: user.get("email"),
         phone: user.get("phone")

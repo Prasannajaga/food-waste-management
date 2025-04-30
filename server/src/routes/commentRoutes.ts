@@ -6,7 +6,7 @@ const router = Router();
 
 // Create
 // This route creates a new comment and returns the newly created comment
-router.post('/comments', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     // Create a new comment with the data sent in the request body
     const comment = await Comment.create(req.body);
@@ -20,7 +20,7 @@ router.post('/comments', async (req, res) => {
 
 // Read
 // This route fetches all comments from the database and returns them
-router.get('/comments', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     // Fetch all comments from the database
     const comments = await Comment.findAll();
@@ -34,7 +34,7 @@ router.get('/comments', async (req, res) => {
 
 // Read by ID
 // This route fetches a comment by its id and returns it
-router.get('/comments/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     // Get the id of the comment from the request params
     const id = req.params.id;
@@ -55,7 +55,7 @@ router.get('/comments/:id', async (req, res) => {
 
 // Update
 // This route updates a comment and returns the updated comment
-router.put('/comments/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     // Get the id of the comment from the request params
     const id = req.params.id;
@@ -78,7 +78,7 @@ router.put('/comments/:id', async (req, res) => {
 
 // Delete
 // This route deletes a comment and returns a success message
-router.delete('/comments/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     // Get the id of the comment from the request params
     const id = req.params.id;
