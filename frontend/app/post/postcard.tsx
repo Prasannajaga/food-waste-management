@@ -18,10 +18,10 @@ import { baseHttp } from "@/axios/apiService";
 export default function PostCard({ posts }: any) {
 
     const divRefs = useRef<any[]>([]);
-
     const userData = JSON.parse(localStorage.getItem("user") ?? "");
 
     const handleToggleAll = (index: number) => {
+        console.log("handleToogle");
         const current = divRefs.current[index];
         if (current) {
             current.style.display = current.style.display === "none" ? "block" : "none";
@@ -29,6 +29,7 @@ export default function PostCard({ posts }: any) {
     };
 
     const handleKeyDown = (index: number, e: any) => {
+        console.log("key down");
         if (e.key === "Enter") {
             onComment(index, e);
         }
@@ -45,8 +46,15 @@ export default function PostCard({ posts }: any) {
         e.target.value = "";
     }
 
-
-
+    const onLikes = async (index: number) => { 
+        console.log("on like");
+        const data = {
+            user_id: userData.userId,
+            post_id: posts[index].post_id, 
+        };
+        const response = await baseHttp.post("/post/likes", data);
+        console.log("response " , response);
+     } 
 
     return (
         <>
@@ -97,8 +105,8 @@ export default function PostCard({ posts }: any) {
                             </CardContent>
                             <Separator className="my-2"></Separator>
                             <CardFooter className="justify-evenly pb-4" >
-                                <Label className="flex-primary hover:scale-105 transition-all">
-                                    <Heart fill="red" stroke="white" size={16} /> Like
+                                <Label className="flex-primary hover:scale-105 transition-all" onClick={() => onLikes(index)}>
+                                    <Heart fill={(item.Likes ?? [])?.find((x:any) => x.user_id === userData.userId) ? "red" : "white"} size={16} /> {item.Likes?.length} Like
                                 </Label>
                                 <Separator orientation="vertical" className="h-5"></Separator>
                                 <Label onClick={() => handleToggleAll(index)} className="flex-primary hover:scale-105 transition-all">
@@ -114,7 +122,7 @@ export default function PostCard({ posts }: any) {
 
                                 <section className="flex gap-2 my-4 items-center">
                                     <Input onKeyDown={(e) => handleKeyDown(index, e)} placeholder="comment here..."></Input>
-                                    <Button>comment</Button>
+                                    <Button onClick={(e) => onComment(index,e)}>comment</Button>
                                     <RefreshCw />
                                 </section>
 
