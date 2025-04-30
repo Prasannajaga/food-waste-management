@@ -1,4 +1,5 @@
 "use client";
+import { baseHttp } from "@/axios/apiService";
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -13,41 +14,36 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label" 
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";   
-import { CookingPot } from "lucide-react";
-import { NEXT_META_SUFFIX } from "next/dist/lib/constants";
-import { useEffect, useState } from "react";
-import { useFormState } from "react-dom";
+import { toast } from "@/hooks/use-toast";
+import { CookingPot } from "lucide-react"; 
+import { useEffect, useState } from "react"; 
 
-export default function PostModal() {
+export default function PostModal({userData,postCallbk, initial}:any) {
   const [minDateTime, setMinDateTime] = useState("");
   const [maxDateTime, setMaxDateTime] = useState("");
+  const [open, setOpen] = useState(initial);
 
-  const [formData , setFormData] = useState({
+  const [formData , setFormData] = useState({ 
     title : "",
     description : "",
-    expiresIn : ""
+    expires_in : new Date().toISOString().slice(0, 16)
   });
 
-  useEffect(() => {
+  useEffect(() => { 
     const now = new Date();
+    const formatDate = (date: Date) => {
+      return date.toISOString().slice(0, 16); // "yyyy-MM-ddTHH:mm"
+    };  
     const future = new Date();
     future.setDate(now.getDate() + 1); // 1 year ahead
 
-    const formatDate = (date: Date) => {
-      return date.toISOString().slice(0, 16); // "yyyy-MM-ddTHH:mm"
-    };
-
-    console.log(formatDate(now));
-    console.log(formatDate(future));
-    
 
     setMinDateTime(formatDate(now));
-    setMaxDateTime(formatDate(future));
+    setMaxDateTime(formatDate(future)); 
   }, []);
 
 
-  const onFormChange = ({target : {value , name}}:any) =>{ 
-        // console.log(e); 
+  const onFormChange = ({target : {value , name}}:any) =>{  
         setFormData(prev=>{
             return {
                 ...prev,
@@ -56,16 +52,25 @@ export default function PostModal() {
         })
   }
 
-  const onSubmit = ({target : {value , name}}:any) =>{ 
-        console.log(formData);
-        
+  const onSubmit = async ({target : {value , name}}:any) =>{  
+    const payload = {user_id : userData.user_id , ...formData}
+    console.log("asasa",payload , userData);
+    
+    const response = await baseHttp.post("/posts" ,payload);
+    if(response.data){
+        toast({
+            title : "post created!"
+        })
+        postCallbk(payload.user_id);
+        setOpen(false);
+    }
   }
 
 
  
   return (
     <>
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
               <Button variant="outline"><CookingPot /> Share Food</Button>
           </DialogTrigger>
@@ -90,10 +95,10 @@ export default function PostModal() {
                       <Input
                             type="datetime-local"
                             id="datetime"
-                            name="expiresIn"
+                            name="expires_in"
                             min={minDateTime}
                             max={maxDateTime}
-                            value={formData.expiresIn}
+                            value={formData.expires_in}
                             onChange={onFormChange}
                             step="900"  // 15 minutes 
                             className="w-full p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"

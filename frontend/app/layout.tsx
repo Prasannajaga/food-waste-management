@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import {  Geist, Geist_Mono } from "next/font/google";
-import "./globals.css"; 
-import ClientLayout from "./authLayout";
-import Login from "./login/page";
+import "./globals.css";  
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./landingpage/sidebar";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +36,7 @@ export default function RootLayout({
           <article className="w-full p-4">
             <SidebarTrigger className="mb-4" />
             {children}
+            <Toaster></Toaster>
           </article>
         </main>
       </SidebarProvider>

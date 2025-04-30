@@ -16,43 +16,93 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs";
-import { useRouter } from 'next/navigation';
+} from "@/components/ui/tabs";  
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import { useRouter } from 'next/navigation'; 
 import { useState } from "react"
 
 export default function Login() {
 
   const router = useRouter();
+  const {toast} = useToast();
 
   const [userForm , setUser] = useState<any>({
     email : "",
     password  : "", 
   })
+  const [loginForm , setLogin] = useState<any>({
+    email : "",
+    password  : "", 
+  })
 
 
-  function createUser(e:any){
-      console.log(userForm);
-      baseHttp.post("auth/signup" , userForm).then((res:any) =>{
-        console.log("response -> " , res);
-        if(res?.user!=null){
-          if(router){
-            localStorage.setItem("loggedIn" , "true")
-            router.push("/landingpage")
-          }
+  async function createUser(e:any){ 
+      try {
+        const res =  await baseHttp.post("auth/signup" , userForm);
+          console.log("response -> " , res);
+          if(res?.data.user!=null){ 
+              localStorage.setItem("loggedIn" , "true");
+              document.cookie = JSON.stringify(res.data.user);
+              router.push("/landingpage"); 
+          }  
+      }  
+      catch (error) {
+            
+        if(axios.isAxiosError(error)){
+            if(error.status === 409){ 
+                toast({
+                  variant : "destructive",
+                  title : "user already exists",
+                })
+            }
+         } 
+        else{
+          console.log("Error " , error);
+          
         }
-      });
+
+      }
   }
 
-  function loginUser(e:any){
-      localStorage.setItem('loggedIn' , "true");
-      if(router){
-        router.push("/landingpage");
+  async function loginUser(e:any){
+    try {
+      const res =  await baseHttp.post("auth/login" , loginForm);
+        console.log("response -> " , res);
+        if(res?.data.user!=null){ 
+            localStorage.setItem("loggedIn" , "true");
+            localStorage.setItem("user" , JSON.stringify(res.data.user));
+            document.cookie = JSON.stringify(res.data.user);
+            router.push("/landingpage"); 
+        }  
+    }  
+    catch (error) {
+          
+      if(axios.isAxiosError(error)){
+          if(error.status === 409){ 
+              toast({
+                variant : "destructive",
+                title : "user already exists",
+              })
+          }
+       } 
+      else{
+        console.log("Error " , error);
+        
       }
+
+    }
   }
 
 
   const setUserForm = (event:any) => {
     setUser((prev : any) => ({
+      ...prev,
+      [event.target.name]: event.target.value,  
+    }));
+  };
+  const setLoginForm = (event:any) => {
+    setLogin((prev : any) => ({
       ...prev,
       [event.target.name]: event.target.value,  
     }));
@@ -77,11 +127,11 @@ export default function Login() {
             <CardContent className="space-y-2">
               <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" defaultValue="Pedro Duarte" />
+                <Input value={loginForm.email} onChange={setLoginForm} id="email" name="email" />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="password">password</Label>
-                <Input id="password" defaultValue="@peduarte" />
+                <Input value={loginForm.password} onChange={setLoginForm} id="password"  name="password" type="password"/>
               </div>
             </CardContent>
             <CardFooter>
