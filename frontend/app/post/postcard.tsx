@@ -14,10 +14,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { baseHttp } from "@/axios/apiService";
+import ClaimModal from "@/sharedComponents/claimModal";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { useToast } from "@/hooks/use-toast";
 
 export default function PostCard({ posts }: any) {
 
     const divRefs = useRef<any[]>([]);
+    const {toast} = useToast();
     const userData = JSON.parse(localStorage.getItem("user") ?? "");
 
     const handleToggleAll = (index: number) => {
@@ -46,15 +56,36 @@ export default function PostCard({ posts }: any) {
         e.target.value = "";
     }
 
-    const onLikes = async (index: number) => { 
+    const onLikes = async (index: number) => {
         console.log("on like");
         const data = {
             user_id: userData.userId,
-            post_id: posts[index].post_id, 
+            post_id: posts[index].post_id,
         };
         const response = await baseHttp.post("/post/likes", data);
-        console.log("response " , response);
-     } 
+        console.log("response ", response);
+    }
+
+
+    const onClaim = async (index: number) => {
+        console.log("on Claim");
+       try {
+        const data = {
+            claimer_id: userData.userId,
+            post_id: posts[index].post_id,
+        };
+        const response = await baseHttp.post("/claims/", data);
+        if(response.data){
+            toast({
+                variant : "default" ,
+                title : `Claimed ${posts[index].title}`
+            })
+        }
+        console.log("response ", response);
+       } catch (error) {
+            toast({variant : "destructive" , title : "Already claimed" , description : "wait for the approval"})
+       }
+    };
 
     return (
         <>
@@ -76,12 +107,30 @@ export default function PostCard({ posts }: any) {
                                     </section>
                                     <TooltipProvider>
                                         <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <Button variant="outline"> <BellDot /></Button>
-                                            </TooltipTrigger>
-                                            <TooltipContent className="bg-black border p-2">
-                                                <p   >Claim this food</p>
-                                            </TooltipContent>
+                                            {item.User.user_id === userData.userId ?
+                                                <>
+                                                    <Dialog >
+                                                        <DialogTrigger asChild>
+                                                            <Button variant="outline">View Claims </Button>
+                                                        </DialogTrigger>
+                                                        <DialogContent className="sm:max-w-xl">
+                                                            <DialogHeader>
+                                                                <DialogTitle>ClaimedBy</DialogTitle>
+                                                            </DialogHeader>
+                                                            <ClaimModal postId={item.post_id} initial={false} />
+                                                        </DialogContent>
+                                                    </Dialog>
+                                                </>
+                                                :
+                                                <>
+                                                    <TooltipTrigger asChild>
+                                                        <Button onClick={() => onClaim(index)} variant="outline"> <BellDot /></Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent className="bg-black border p-2">
+                                                        <p>Claim this food</p>
+                                                    </TooltipContent>
+                                                </>
+                                            }
                                         </Tooltip>
                                     </TooltipProvider>
                                 </CardDescription>
@@ -106,7 +155,7 @@ export default function PostCard({ posts }: any) {
                             <Separator className="my-2"></Separator>
                             <CardFooter className="justify-evenly pb-4" >
                                 <Label className="flex-primary hover:scale-105 transition-all" onClick={() => onLikes(index)}>
-                                    <Heart fill={(item.Likes ?? [])?.find((x:any) => x.user_id === userData.userId) ? "red" : "white"} size={16} /> {item.Likes?.length} Like
+                                    <Heart fill={(item.Likes ?? [])?.find((x: any) => x.user_id === userData.userId) ? "red" : "white"} size={16} /> {item.Likes?.length} Like
                                 </Label>
                                 <Separator orientation="vertical" className="h-5"></Separator>
                                 <Label onClick={() => handleToggleAll(index)} className="flex-primary hover:scale-105 transition-all">
@@ -122,7 +171,7 @@ export default function PostCard({ posts }: any) {
 
                                 <section className="flex gap-2 my-4 items-center">
                                     <Input onKeyDown={(e) => handleKeyDown(index, e)} placeholder="comment here..."></Input>
-                                    <Button onClick={(e) => onComment(index,e)}>comment</Button>
+                                    <Button onClick={(e) => onComment(index, e)}>comment</Button>
                                     <RefreshCw />
                                 </section>
 
@@ -151,7 +200,7 @@ export default function PostCard({ posts }: any) {
                                                                         <Heart className="group-hover:fill-red-500 " size={16} />
                                                                     </div>
                                                                     <div className="group hover:scale-105 transition-all duration-300" >
-                                                                        <MessageCircleReply className="group-hover:fill-red-500 "  size={16} />
+                                                                        <MessageCircleReply className="group-hover:fill-red-500 " size={16} />
 
                                                                     </div>
                                                                 </div>
