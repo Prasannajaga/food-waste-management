@@ -7,6 +7,8 @@ async function getUserByEmail(credentials : any) {
 
   // Replace with your DB call (e.g., Prisma, Mongoose, raw SQL) 
   const res =  await baseHttp.post("auth/login" , credentials);
+  console.log("api call happens");
+  
   if(!res.data.user){  
     return null;
   }    
