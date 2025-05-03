@@ -34,10 +34,10 @@ router.get('/post/:postId', async (req, res) => {
         {
           model: User,
           as: 'claimer',
-          attributes: ['name'],
+          attributes: ['name' , "user_id"],
         },
       ],
-      attributes: ['claimed_at' , 'status'],
+    attributes: ['claimed_at' , 'status' , "claim_id"],
     });
 
     res.json(claims);

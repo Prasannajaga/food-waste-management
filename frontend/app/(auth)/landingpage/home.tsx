@@ -10,11 +10,11 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"; 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { CommandDialogDemo } from "./command"; 
-import { SkeletonDemo } from "./customSkeleton";
-import PostModal from "../post/postModal";
-import { baseHttp } from "@/axios/apiService";
+import { SkeletonDemo } from "./customSkeleton"; 
+import { baseHttp } from "@/axios/apiService";  
 import PostCard from "../post/postcard";
-import { useRouter } from "next/navigation";
+import PostModal from "../post/postModal";
+import { useSession } from "next-auth/react";
 
 
 
@@ -24,14 +24,20 @@ export default function LandingPage() {
     const [searchData, setSearchData] = useState<any>(null);
     const [isLoading, setLoading] = useState<boolean>(true);
     const [userData, setUser] = useState<any>({});
-    const divRef = useRef<any>(null);
-    const router = useRouter();
-
+    const {data , status} = useSession();
+    const divRef = useRef<any>(null); 
 
     useEffect(() => {
-        try {
-            const user = JSON.parse(localStorage.getItem("user") ?? "");
-            setUser(user ?? {});
+         if (data?.user) { 
+          setUser({
+            ...data.user,
+            user_id : (data.user as any).id
+        });
+        }
+    }, [data]); 
+
+    useEffect(() => {
+        try { 
             getPosts();
             if (divRef.current) {
                 const childArray = Array.from(divRef.current.children).map((el: any) => {
@@ -39,11 +45,7 @@ export default function LandingPage() {
                 });
                 setSearchData(childArray)
             } 
-        } catch (error) {
-            console.log("Err" , error);
-            
-            router.push("/login")
-            setLoading(false);
+        } catch (error) { 
         } 
 
     }, []);
@@ -55,8 +57,7 @@ export default function LandingPage() {
 
     async function getPosts() {
         const response = await baseHttp.get("/posts/all");
-        if (response.data) {
-            console.log("response ", response);
+        if (response.data) { 
             setPosts(response.data);
             setLoading(false);
         }
@@ -97,7 +98,7 @@ export default function LandingPage() {
                                 </CardFooter>
                             </Card>
 
-                            <PostCard posts={posts} />
+                            <PostCard posts={posts} user={userData} />
                         </>)
                     }  
 

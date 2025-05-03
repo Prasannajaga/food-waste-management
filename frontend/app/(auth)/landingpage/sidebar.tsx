@@ -13,6 +13,7 @@ import {
 import { Calendar, Inbox, Search, Settings , Home} from "lucide-react"; 
 import { useState } from "react";
 import Link from 'next/link';
+import { signOut } from "next-auth/react";
 
 
   
@@ -81,6 +82,7 @@ export function AppSidebar() {
             </SidebarGroupContent> 
           </SidebarGroup>
         </SidebarContent>
+        <button onClick={() => signOut({callbackUrl : "/login"})}>Sign Out</button>
         <SidebarFooter />
       </Sidebar>
     )

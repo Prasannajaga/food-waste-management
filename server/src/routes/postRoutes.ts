@@ -1,6 +1,6 @@
 // src/routes/postRoutes.ts
 import { Router } from 'express';
-import  Post  from '../models/Post';  
+import  Post  from '../models/Post';    
 import { findPosts } from '../service/postService';
 
 const router = Router();

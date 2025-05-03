@@ -1,10 +1,11 @@
 "use client";
 import { baseHttp } from "@/axios/apiService";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 
 export default function ClaimModal({ initial, postId }: any) {
-    const [claims, setClaims] = useState([]);
+    const [claims, setClaims] = useState<any[]>([]);
 
     useEffect(() => {
 
@@ -13,11 +14,19 @@ export default function ClaimModal({ initial, postId }: any) {
             console.log("response", response);
             setClaims(response.data);
         }
-
-
         getClaims();
 
     }, [open]);
+
+
+    const onClaimAccept = async (index : number , e : any) =>{
+        console.log(claims[index] , e);
+        const data =  { claim_id : claims[index].claim_id , status : e}
+        const response = await baseHttp.put("/claims/"+data.claim_id, data)
+        console.log("response ", response);
+        
+    };
+
 
 
     return (
@@ -38,9 +47,17 @@ export default function ClaimModal({ initial, postId }: any) {
                                         <h4 className="font-semibold text-gray-800">{x.claimer.name}</h4>
                                         <span className="text-xs text-gray-500">{new Date(x.claimed_at).toLocaleTimeString()}</span>
                                     </div>
-                                </div> 
-                                <div className="flex"> 
-                                    <Button>{x.status}</Button>
+                                </div>
+                                <div className="flex">
+                                     <Select  onValueChange={(e) => onClaimAccept(index,e)}>
+                                        <SelectTrigger  className="w-[180px]  border-1 !border-red-500 !text-green-600"> 
+                                            <SelectValue placeholder={x.status} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="ACCEPTED">Accepted</SelectItem>
+                                            <SelectItem value="REJECTED">Rejected</SelectItem> 
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
                         </div>

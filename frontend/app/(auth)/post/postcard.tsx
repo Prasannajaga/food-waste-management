@@ -11,7 +11,7 @@ import {
     CardHeader,
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { useRef } from "react";
+import {  useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { baseHttp } from "@/axios/apiService";
 import ClaimModal from "@/sharedComponents/claimModal";
@@ -22,13 +22,18 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast"; 
 
-export default function PostCard({ posts }: any) {
+export default function PostCard({ posts , user}: any) {
 
     const divRefs = useRef<any[]>([]);
-    const {toast} = useToast();
-    const userData = JSON.parse(localStorage.getItem("user") ?? "");
+    const {toast} = useToast(); 
+    const [userData , setUser] = useState(user); 
+
+    useEffect(() =>{
+        setUser(user);
+    }, [user]);
+ 
 
     const handleToggleAll = (index: number) => {
         console.log("handleToogle");
@@ -48,7 +53,7 @@ export default function PostCard({ posts }: any) {
     const onComment = async (index: number, e: any) => {
         console.log("User pressed Enter:", e.target.value, posts[index], userData);
         const data = {
-            user_id: userData.userId,
+            user_id: userData.user_id,
             post_id: posts[index].post_id,
             comment: e.target.value
         };
@@ -59,7 +64,7 @@ export default function PostCard({ posts }: any) {
     const onLikes = async (index: number) => {
         console.log("on like");
         const data = {
-            user_id: userData.userId,
+            user_id: userData.user_id,
             post_id: posts[index].post_id,
         };
         const response = await baseHttp.post("/post/likes", data);
@@ -71,7 +76,7 @@ export default function PostCard({ posts }: any) {
         console.log("on Claim");
        try {
         const data = {
-            claimer_id: userData.userId,
+            claimer_id: userData.user_id,
             post_id: posts[index].post_id,
         };
         const response = await baseHttp.post("/claims/", data);
@@ -107,7 +112,7 @@ export default function PostCard({ posts }: any) {
                                     </section>
                                     <TooltipProvider>
                                         <Tooltip>
-                                            {item.User.user_id === userData.userId ?
+                                            {item.User.user_id === userData?.user_id ?
                                                 <>
                                                     <Dialog >
                                                         <DialogTrigger asChild>
@@ -155,7 +160,7 @@ export default function PostCard({ posts }: any) {
                             <Separator className="my-2"></Separator>
                             <CardFooter className="justify-evenly pb-4" >
                                 <Label className="flex-primary hover:scale-105 transition-all" onClick={() => onLikes(index)}>
-                                    <Heart fill={(item.Likes ?? [])?.find((x: any) => x.user_id === userData.userId) ? "red" : "white"} size={16} /> {item.Likes?.length} Like
+                                    <Heart fill={(item.Likes ?? [])?.find((x: any) => x.user_id === userData.user_id) ? "red" : "white"} size={16} /> {item.Likes?.length} Like
                                 </Label>
                                 <Separator orientation="vertical" className="h-5"></Separator>
                                 <Label onClick={() => handleToggleAll(index)} className="flex-primary hover:scale-105 transition-all">

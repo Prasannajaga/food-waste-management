@@ -1,4 +1,5 @@
 "use client";
+import React from 'react';
 import { baseHttp } from "@/axios/apiService"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,11 +22,15 @@ import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { useRouter } from 'next/navigation'; 
 import { useState } from "react"
+import { signIn } from "next-auth/react";
+
 
 export default function Login() {
 
   const router = useRouter();
   const {toast} = useToast();
+
+  const [title , setTitle] = useState("Sign In");
 
   const [userForm , setUser] = useState<any>({
     email : "",
@@ -34,7 +39,7 @@ export default function Login() {
   const [loginForm , setLogin] = useState<any>({
     email : "",
     password  : "", 
-  })
+  });
 
 
   async function createUser(e:any){ 
@@ -67,14 +72,21 @@ export default function Login() {
 
   async function loginUser(e:any){
     try {
-      const res =  await baseHttp.post("auth/login" , loginForm);
-        console.log("response -> " , res);
-        if(res?.data.user!=null){ 
-            localStorage.setItem("loggedIn" , "true");
-            localStorage.setItem("user" , JSON.stringify(res.data.user));
-            document.cookie = JSON.stringify(res.data.user);
-            router.push("/landingpage"); 
-        }  
+
+      signIn("credentials" , {
+        ...loginForm,
+        redirect : true,
+        callbackUrl: "/landingpage",
+      })
+
+      // const res =  await baseHttp.post("auth/login" , loginForm);
+      //   console.log("response -> " , res);
+      //   if(res?.data.user!=null){ 
+      //       localStorage.setItem("loggedIn" , "true");
+      //       localStorage.setItem("user" , JSON.stringify(res.data.user));
+      //       document.cookie = JSON.stringify(res.data.user);
+      //       // router.push("/landingpage"); 
+      //   }  
     }  
     catch (error) {
           
@@ -92,8 +104,7 @@ export default function Login() {
       }
 
     }
-  }
-
+  } 
 
   const setUserForm = (event:any) => {
     setUser((prev : any) => ({
@@ -111,10 +122,10 @@ export default function Login() {
 
   return (
     <div className="flex flex-col justify-center h-screen items-center">
-      <Tabs defaultValue="account" className=" w-[400px] ">
+      <Tabs defaultValue="account" className=" w-[400px]" onValueChange={setTitle} value={title}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="Sign In">Sign In</TabsTrigger>
-          <TabsTrigger value="Sign Up">Sign Up</TabsTrigger>
+          <TabsTrigger   value="Sign In">Sign In</TabsTrigger>
+          <TabsTrigger   value="Sign Up">Sign Up</TabsTrigger>
         </TabsList>
         <TabsContent value="Sign In">
           <Card>
