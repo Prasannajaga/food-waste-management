@@ -31,8 +31,6 @@ FoodWasteManager is a social platform that connects food donors with nearby indi
 - **Database:**  PostgreSQL
 - **Other Tools:** Google Maps API, clear authentication
 
-## Database Structure
-
 ### ER Diagram
 
 ```mermaid
@@ -80,3 +78,60 @@ erDiagram
     USERS ||--o{ CLAIMS : "claims"
     POSTS ||--o{ COMMENTS : "receives"
     USERS ||--o{ COMMENTS : "writes"
+```
+
+
+### System Design 
+
+```mermaid
+    graph LR
+    %% Define Components
+    A[User Interface]:::ui
+    subgraph Express.js Server
+        B((Express.js)):::server
+        subgraph Express Services
+            C[userService]:::service
+            D[postService]:::service
+            E[likeService]:::service
+            F[commentService]:::service
+            G[claimService]:::service
+        end
+    end
+    subgraph FastAPI Server
+        H((FastAPI)):::server
+        I[notificationService]:::service
+    end
+    J[(PostgreSQL)]:::db
+    K[(MongoDB)]:::db
+
+    %% Connections
+    A -->|HTTP Requests| B
+    A -->|Fetch Notifications| H
+    B -->|HTTP Requests| C
+    B -->|HTTP Requests| D
+    B -->|HTTP Requests| E
+    B -->|HTTP Requests| F
+    B -->|HTTP Requests| G
+    C -->|Store Data| J
+    D -->|Store Data| J
+    E -->|Store Data| J
+    F -->|Store Data| J
+    G -->|Store Data| J
+    B -->|Send Notification Event| H
+    H -->|HTTP Requests| I
+    I -->|Store Notifications| K
+    H -->|Return Notifications| A
+    H -->|check if user exists| J
+
+    %% Styling
+    classDef ui fill:#e0f7fa,stroke:#00796b,stroke-width:2px
+    classDef server fill:#bbdefb,stroke:#1976d2,stroke-width:2px
+    classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef db fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    linkStyle 0,12 stroke:#00796b,stroke-width:2px
+    linkStyle 1,13 stroke:#1976d2,stroke-width:2px
+    linkStyle 2,3,4,5,6 stroke:#f57c00,stroke-width:2px
+    linkStyle 7,8,9,10,11 stroke:#c2185b,stroke-width:2px
+
+
+```
