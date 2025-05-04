@@ -1,13 +1,22 @@
 import { Router } from 'express';
 import  Claim  from '../models/claim';
 import { User } from '../models';
+import { createNotification } from '../service/notificationService';
 
 const router = Router();
  
 router.post('/', async (req, res) => {
   try { 
-    const claim = await Claim.create(req.body);
-     res.json(claim);
+    const data = req.body;
+    const claim = await Claim.create(data);
+    createNotification({
+      recipient_id: data.recipient_id,
+      sender_id : data.claimer_id,
+      type: 'CLAIMS',
+      reference_id: data.post_id,
+      message: "Claimed your food"
+    });
+  res.json(claim);
   } catch (error) {
      res.status(500).json({ message: 'Error creating claim' , error : error});
   }
@@ -69,7 +78,15 @@ router.put('/:id', async (req, res) => {
     if (!claim) {
       res.status(404).json({ message: 'Claim not found' });
     } else {
-      await claim.update(req.body);
+      const data = req.body;
+      await claim.update(data);
+      createNotification({
+        recipient_id: data.recipient_id,
+        sender_id: data.sender_id,
+        type: 'CLAIMS',
+        reference_id: data.post_id,
+        message: "accepted your Claim." 
+      }); 
       res.json(claim);
     }
   } catch (error) {

@@ -1,101 +1,96 @@
 // src/routes/commentRoutes.ts
 import { Router } from 'express';
 import  Comment  from '../models/comment';
+import { createNotification } from '../service/notificationService';
 
 const router = Router();
-
-// Create
-// This route creates a new comment and returns the newly created comment
+ 
 router.post('/', async (req, res) => {
-  try {
-    // Create a new comment with the data sent in the request body
-    const comment = await Comment.create(req.body);
-    // Return the newly created comment
+  try { 
+    const data = req.body;
+    const comment = await Comment.create(data);
+    createNotification({
+        recipient_id: data.recipient_id,
+        sender_id: data.user_id,
+        type: 'COMMENTS',
+        reference_id: data.post_id,
+        message: data.comment
+      }); 
     res.json(comment);
-  } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
-    res.status(500).json({ message: 'Error creating comment' });
+  } catch (error) { 
+    res.status(500).json({ message: 'Error creating comment' , error : error});
   }
 });
 
-// Read
-// This route fetches all comments from the database and returns them
 router.get('/', async (req, res) => {
   try {
-    // Fetch all comments from the database
     const comments = await Comment.findAll();
-    // Return all comments
     res.json(comments);
   } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
-    res.status(500).json({ message: 'Error fetching comments' });
+    res.status(500).json({ message: 'Error fetching comments' , error : error });
   }
 });
-
-// Read by ID
-// This route fetches a comment by its id and returns it
+ 
 router.get('/:id', async (req, res) => {
   try {
-    // Get the id of the comment from the request params
     const id = req.params.id;
-    // Fetch the comment with the given id
     const comment = await Comment.findByPk(id);
-    // If the comment is not found, return a 404 status code and a JSON object with an error message
     if (!comment) {
       res.status(404).json({ message: 'Comment not found' });
     } else {
-      // If the comment is found, return it
       res.json(comment);
     }
   } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
-    res.status(500).json({ message: 'Error fetching comment' });
+    res.status(500).json({ message: 'Error fetching comment' , error : error});
   }
 });
 
-// Update
-// This route updates a comment and returns the updated comment
+router.get('/byPost/:id', async (req, res) => {
+  try { 
+    const id = req.params.id; 
+    const comment = await Comment.findAll({
+      where : {post_id : id}
+    });
+    
+     if (!comment) {
+      res.status(404).json({ message: 'Comment not found' });
+    } else {
+       res.json(comment);
+    }
+  } catch (error) {
+     res.status(500).json({ message: 'Error fetching comment' , error : error });
+  }
+});
+ 
 router.put('/:id', async (req, res) => {
-  try {
-    // Get the id of the comment from the request params
+  try { 
     const id = req.params.id;
-    // Fetch the comment with the given id
     const comment = await Comment.findByPk(id);
-    // If the comment is not found, return a 404 status code and a JSON object with an error message
+
     if (!comment) {
       res.status(404).json({ message: 'Comment not found' });
     } else {
-      // If the comment is found, update it with the data sent in the request body
-      await comment.update(req.body);
-      // Return the updated comment
+      await comment.update(req.body);      // Return the updated comment
       res.json(comment);
     }
   } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
-    res.status(500).json({ message: 'Error updating comment' });
+    res.status(500).json({ message: 'Error updating comment' , error : error});
   }
 });
-
-// Delete
-// This route deletes a comment and returns a success message
+ 
 router.delete('/:id', async (req, res) => {
   try {
-    // Get the id of the comment from the request params
+     
     const id = req.params.id;
-    // Fetch the comment with the given id
     const comment = await Comment.findByPk(id);
-    // If the comment is not found, return a 404 status code and a JSON object with an error message
     if (!comment) {
       res.status(404).json({ message: 'Comment not found' });
     } else {
-      // If the comment is found, delete it
       await comment.destroy();
-      // Return a success message
       res.json({ message: 'Comment deleted successfully' });
     }
   } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
-    res.status(500).json({ message: 'Error deleting comment' });
+    res.status(500).json({ message: 'Error deleting comment' , error : error });
   }
 });
 
