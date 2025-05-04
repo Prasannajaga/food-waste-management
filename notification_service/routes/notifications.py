@@ -30,8 +30,8 @@ def checkhealth():
     return "health is good"
 
 @router.get("/user/{user_id}")
-async def get_notifications(user_id: int):
-    return await get_user_notifications(user_id)
+async def get_notifications(user_id: int , types: str = None):
+    return await get_user_notifications(user_id , types)
 
 @router.post("/read/{notif_id}")
 async def read_notification(notif_id: str):

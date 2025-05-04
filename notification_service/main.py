@@ -1,7 +1,8 @@
 from fastapi import FastAPI , Request
 from routes.notifications import router as notifications_router  
 import logging
-from tortoise.contrib.fastapi import register_tortoise
+from fastapi.middleware.cors import CORSMiddleware
+from tortoise.contrib.fastapi import register_tortoise 
 
 
 logging.basicConfig(level=logging.INFO)
@@ -17,3 +18,17 @@ register_tortoise(
     modules={"models": ["sql_models"]},
     generate_schemas=False,  
 )
+
+origins = [
+    "http://localhost:3000",  
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # or ["*"] for all
+    allow_credentials=True,
+    allow_methods=["*"],  # GET, POST, PUT, DELETE, etc.
+    allow_headers=["*"],  # Authorization, Content-Type, etc.
+)
+ 
+ 

@@ -9,8 +9,13 @@ async def create_notification(data: CreateNotificationSchema):
     result = await notification_collection.insert_one(notification.dict())
     return str(result.inserted_id)
 
-async def get_user_notifications(user_id: int):
-    notifications = await notification_collection.find({"recipient_id": user_id}).to_list(100)
+async def get_user_notifications(user_id: int , types: str = None):
+    query = {"recipient_id": user_id}
+    if types:  
+        query["type"] = types.upper()
+
+    notifications = await notification_collection.find(query).to_list(100)
+    print("not" , notifications)
     for n in notifications:
         n["id"] = str(n["_id"])
         del n["_id"]
