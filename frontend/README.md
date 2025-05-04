@@ -1,4 +1,4 @@
-app/
+  app/
 ├── layout.tsx                    # Root layout — wraps everything (fonts, html, etc.)
 ├── globals.css                   # Global styles
 │
@@ -18,4 +18,6 @@ app/
 │
 ├── api/
 │   └── auth/
-│       └── [...nextauth]/route.ts # NextAuth API route
+│       └── [...nextauth]/route.ts # NextAuth API route -->
+
+ 

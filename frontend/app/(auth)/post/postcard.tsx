@@ -22,17 +22,22 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { useToast } from "@/hooks/use-toast"; 
+import { useToast } from "@/hooks/use-toast";  
 
-export default function PostCard({ posts , user}: any) {
+export default function PostCard({ posts : postData, user}: any) {
 
     const divRefs = useRef<any[]>([]);
     const {toast} = useToast(); 
     const [userData , setUser] = useState(user); 
+    const [posts , setPost] = useState(postData); 
 
     useEffect(() =>{
         setUser(user);
     }, [user]);
+
+    useEffect(() =>{
+        setPost(postData);
+    }, [postData]);
  
 
     const handleToggleAll = (index: number) => {
@@ -50,15 +55,27 @@ export default function PostCard({ posts , user}: any) {
         }
     };
 
+    const onCommentRefresh = async (index: number) =>{
+        const response = await baseHttp.get("/post/comments/byPost/"+posts[index].post_id);
+        posts[index].Comments = response.data;
+        console.log(posts);
+        
+        setPost((prev:any) => {
+            return [...posts]
+        }); 
+    };
+
     const onComment = async (index: number, e: any) => {
         console.log("User pressed Enter:", e.target.value, posts[index], userData);
         const data = {
             user_id: userData.user_id,
             post_id: posts[index].post_id,
-            comment: e.target.value
+            comment: e.target.value,
+            recipient_id : posts[index].User.user_id
         };
         const response = await baseHttp.post("/post/comments", data);
         e.target.value = "";
+        onCommentRefresh(index);
     }
 
     const onLikes = async (index: number) => {
@@ -66,6 +83,7 @@ export default function PostCard({ posts , user}: any) {
         const data = {
             user_id: userData.user_id,
             post_id: posts[index].post_id,
+            recipient_id : posts[index].User.user_id
         };
         const response = await baseHttp.post("/post/likes", data);
         console.log("response ", response);
@@ -78,6 +96,7 @@ export default function PostCard({ posts , user}: any) {
         const data = {
             claimer_id: userData.user_id,
             post_id: posts[index].post_id,
+            recipient_id : posts[index].User.user_id
         };
         const response = await baseHttp.post("/claims/", data);
         if(response.data){
@@ -97,8 +116,8 @@ export default function PostCard({ posts , user}: any) {
             {posts?.length > 0 ?
                 <div className="flex flex-col gap-4 ">
                     {posts.map((item: any, index: number) => (
-                        <Card id={item} key={index} className="w-full">
-                            <CardHeader className="p-3">
+                        <Card id={item} key={index} className="w-full" >
+                            <CardHeader className="p-3"  >
                                 <CardDescription className="flex justify-between">
                                     <section className="flex gap-2 items-center">
                                         <Avatar className="w-[40px] h-[40px]">
@@ -106,7 +125,7 @@ export default function PostCard({ posts , user}: any) {
                                             <AvatarFallback>CN</AvatarFallback>
                                         </Avatar>
                                         <div className="">
-                                            <h2 className="font-bold">{item.User.name}</h2>
+                                            <h2 className="font-bold">{item?.User?.name}</h2>
                                             <small>{new Date(item.created_at).toLocaleString()}</small>
                                         </div>
                                     </section>
@@ -116,20 +135,23 @@ export default function PostCard({ posts , user}: any) {
                                                 <>
                                                     <Dialog >
                                                         <DialogTrigger asChild>
-                                                            <Button variant="outline">View Claims </Button>
+                                                            <Button   variant="outline">View Claims </Button>
                                                         </DialogTrigger>
                                                         <DialogContent className="sm:max-w-xl">
                                                             <DialogHeader>
                                                                 <DialogTitle>ClaimedBy</DialogTitle>
                                                             </DialogHeader>
-                                                            <ClaimModal postId={item.post_id} initial={false} />
+                                                            <ClaimModal user={userData} postId={item.post_id} initial={false} />
                                                         </DialogContent>
                                                     </Dialog>
                                                 </>
                                                 :
                                                 <>
                                                     <TooltipTrigger asChild>
-                                                        <Button onClick={() => onClaim(index)} variant="outline"> <BellDot /></Button>
+                                                        <Button onClick={(e) => {
+                                                            onClaim(index)
+                                                            e.stopPropagation();
+                                                            }} variant="outline"> <BellDot /></Button>
                                                     </TooltipTrigger>
                                                     <TooltipContent className="bg-black border p-2">
                                                         <p>Claim this food</p>
@@ -140,7 +162,7 @@ export default function PostCard({ posts , user}: any) {
                                     </TooltipProvider>
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="flex flex-col gap-4">
+                            <CardContent   className="flex flex-col gap-4">
                                 <div className="flex-primary">
                                     <CookingPot className="stroke-primary" />
                                     <Label>{item.title}</Label>
@@ -177,7 +199,7 @@ export default function PostCard({ posts , user}: any) {
                                 <section className="flex gap-2 my-4 items-center">
                                     <Input onKeyDown={(e) => handleKeyDown(index, e)} placeholder="comment here..."></Input>
                                     <Button onClick={(e) => onComment(index, e)}>comment</Button>
-                                    <RefreshCw />
+                                    <RefreshCw onClick={() => onCommentRefresh(index)}/>
                                 </section>
 
                                 <section className="flex flex-col gap-2">
@@ -194,7 +216,7 @@ export default function PostCard({ posts , user}: any) {
                                                             />
                                                             <div className="flex-1">
                                                                 <div className="flex gap-2 items-center">
-                                                                    <h4 className="font-semibold text-gray-800">{x.User.name}</h4>
+                                                                    <h4 className="font-semibold text-gray-800">{x.User?.name}</h4>
                                                                     <span className="text-xs text-gray-500">{new Date(x.created_at).toLocaleTimeString()}</span>
                                                                 </div>
                                                                 <p className="text-gray-700 mt-1">

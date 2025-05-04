@@ -24,8 +24,7 @@ export default function Contribution() {
 
     useEffect(() => {
 
-        try {
-
+        try { 
             if (userData.id) {
                 async function getPosts() {
                     const response = await baseHttp.get("/posts?userId=" + userData.id);
@@ -39,7 +38,7 @@ export default function Contribution() {
         } catch (error) {
             router.push("/login");
         }
-
+        
     }, [userData])
 
 

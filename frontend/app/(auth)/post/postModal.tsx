@@ -53,10 +53,9 @@ export default function PostModal({userData,postCallbk, initial}:any) {
   }
 
   const onSubmit = async ({target : {value , name}}:any) =>{  
-    const payload = {user_id : userData.userId , ...formData}
-    console.log("asasa",payload , userData);
-    
-    const response = await baseHttp.post("/posts/" ,payload);
+    const payload = {user_id : userData.user_id , ...formData}
+     
+    const response = await baseHttp.post("/posts" ,payload);
     if(response.data){
         toast({
             title : "post created!"

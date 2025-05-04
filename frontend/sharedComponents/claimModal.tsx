@@ -1,11 +1,12 @@
 "use client";
-import { baseHttp } from "@/axios/apiService";
+import { formatDate } from "@/app/(auth)/notification/page";
+import { baseHttp } from "@/axios/apiService"; 
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 
-export default function ClaimModal({ initial, postId }: any) {
+export default function ClaimModal({ initial, postId , user }: any) {
     const [claims, setClaims] = useState<any[]>([]);
+    const [post_id, setPostId] = useState<string>(postId);
 
     useEffect(() => {
 
@@ -15,16 +16,21 @@ export default function ClaimModal({ initial, postId }: any) {
             setClaims(response.data);
         }
         getClaims();
+        setPostId(postId);
 
-    }, [open]);
+    }, [postId]);
 
 
-    const onClaimAccept = async (index : number , e : any) =>{
-        console.log(claims[index] , e);
-        const data =  { claim_id : claims[index].claim_id , status : e}
-        const response = await baseHttp.put("/claims/"+data.claim_id, data)
-        console.log("response ", response);
-        
+    const onClaimAccept = async (index : number) =>{
+        const data =  { 
+            claim_id : claims[index].claim_id ,
+            status : "ACCEPTED",
+            sender_id : user.user_id,
+            recipient_id : claims[index].claimer.user_id,
+            post_id : post_id
+        };
+        const response = await baseHttp.put("/claims/"+data.claim_id, data); 
+        console.log("response ", response); 
     };
 
 
@@ -45,19 +51,17 @@ export default function ClaimModal({ initial, postId }: any) {
                                 <div className="flex-1 justify-between">
                                     <div className="flex gap-2 items-center">
                                         <h4 className="font-semibold text-gray-800">{x.claimer.name}</h4>
-                                        <span className="text-xs text-gray-500">{new Date(x.claimed_at).toLocaleTimeString()}</span>
+                                        <span className="text-xs text-gray-500">{formatDate(x.claimed_at)}</span>
                                     </div>
                                 </div>
                                 <div className="flex">
-                                     <Select  onValueChange={(e) => onClaimAccept(index,e)}>
-                                        <SelectTrigger  className="w-[180px]  border-1 !border-red-500 !text-green-600"> 
-                                            <SelectValue placeholder={x.status} />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="ACCEPTED">Accepted</SelectItem>
-                                            <SelectItem value="REJECTED">Rejected</SelectItem> 
-                                        </SelectContent>
-                                    </Select>
+                                    {x.status === "ACCEPTED" ?
+                                        <Button>{x.status}</Button>
+                                        :
+                                         <Button onClick={() => onClaimAccept(index)} className="btn-default">Accept</Button>
+                                     }
+                                     
+
                                 </div>
                             </div>
                         </div>
