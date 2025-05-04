@@ -17,7 +17,7 @@ FoodWasteManager is a social platform that connects food donors with nearby indi
   Secure sign-up and login for both donors and recipients.
 - **Post Creation:**  
   Donors can create posts that include descriptions, images, and geolocation data.
-- **Google Maps Integration:**  
+- **Google Maps Integration(WIP):** 
   Enables users to pinpoint the exact location of food donations.
 - **Claim Management:**  
   Recipients can claim available posts, and the system tracks the status of each post.
@@ -26,10 +26,10 @@ FoodWasteManager is a social platform that connects food donors with nearby indi
 
 ## Technology Stack
 
-- **Frontend:**  Next.js
-- **Backend:**  Node.js
-- **Database:**  PostgreSQL
-- **Other Tools:** Google Maps API, clear authentication
+- **Frontend:**  Next.js, next-auth, tailwind
+- **Backend:**  Node.js, Express, fastApi
+- **Database:**  PostgreSQL, MongoDb
+- **Other Tools:**  Sequel.js, motor, tortoise 
 
 ### ER Diagram
 
@@ -96,6 +96,10 @@ erDiagram
     USERS ||--o{ CLAIMS : "claims"
     POSTS ||--o{ COMMENTS : "receives"
     USERS ||--o{ COMMENTS : "writes"
+    POSTS ||--o{ LIKES : "liked by"
+    USERS ||--o{ LIKES : "likes"
+    USERS ||--o{ NOTIFICATIONS : "receives"
+    USERS ||--o{ NOTIFICATIONS : "sends"
 ```
 
 
@@ -139,17 +143,17 @@ erDiagram
     H -->|HTTP Requests| I
     I -->|Store Notifications| K
     H -->|Return Notifications| A
-    H -->|check if user exists| J
+    I <-->|check if user exists| J  
 
     %% Styling
-    classDef ui fill:#e0f7fa,stroke:#00796b,stroke-width:2px
-    classDef server fill:#bbdefb,stroke:#1976d2,stroke-width:2px
-    classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    classDef db fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef ui fill:#e0f7fa,stroke:#00796b,stroke-width:2px,color:#333333
+    classDef server fill:#bbdefb,stroke:#1976d2,stroke-width:2px,color:#333333
+    classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#333333
+    classDef db fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#333333
     linkStyle 0,12 stroke:#00796b,stroke-width:2px
     linkStyle 1,13 stroke:#1976d2,stroke-width:2px
     linkStyle 2,3,4,5,6 stroke:#f57c00,stroke-width:2px
-    linkStyle 7,8,9,10,11 stroke:#c2185b,stroke-width:2px
+    linkStyle 7,8,9,10,11,14,16 stroke:#c2185b,stroke-width:2px
 
 
 ```
