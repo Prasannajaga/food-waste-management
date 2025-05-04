@@ -143,13 +143,13 @@ erDiagram
     H -->|HTTP Requests| I
     I -->|Store Notifications| K
     H -->|Return Notifications| A
-    H -->|check if user exists| J
+    I <-->|check if user exists| J  
 
     %% Styling
-    classDef ui fill:#e0f7fa,stroke:#00796b,stroke-width:2px
-    classDef server fill:#bbdefb,stroke:#1976d2,stroke-width:2px
-    classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    classDef db fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef ui fill:#e0f7fa,stroke:#00796b,stroke-width:2px,color:#333333
+    classDef server fill:#bbdefb,stroke:#1976d2,stroke-width:2px,color:#333333
+    classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#333333
+    classDef db fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#333333
     linkStyle 0,12 stroke:#00796b,stroke-width:2px
     linkStyle 1,13 stroke:#1976d2,stroke-width:2px
     linkStyle 2,3,4,5,6 stroke:#f57c00,stroke-width:2px
