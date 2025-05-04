@@ -12,6 +12,7 @@ const Claim = sequelize.define("Claim", {
   post_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    unique : true,
     references: {
       model: Post,
       key: "post_id",
@@ -21,6 +22,7 @@ const Claim = sequelize.define("Claim", {
   claimer_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    unique : true,
     references: {
       model: User,
       key: "user_id",

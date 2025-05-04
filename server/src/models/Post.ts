@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-import { sequelize } from "../config/dbClient"; 
-import User from "./Users"; 
+import { sequelize } from "../config/dbClient";  
+import User from "./Users";
 
 const Post = sequelize.define("Post", {
   post_id: {
@@ -24,11 +24,13 @@ const Post = sequelize.define("Post", {
   },
   lat: {
     type: DataTypes.DOUBLE,
-    allowNull: false,
+    allowNull: true,
+    defaultValue : 0
   },
   lng: {
     type: DataTypes.DOUBLE,
-    allowNull: false,
+    allowNull: true,
+    defaultValue : 0
   },
   status: {
     type: DataTypes.STRING(20),
@@ -38,6 +40,10 @@ const Post = sequelize.define("Post", {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+  expires_in: {
+    type: DataTypes.DATE, 
+    allowNull : false
+  },
   updated_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
@@ -46,5 +52,6 @@ const Post = sequelize.define("Post", {
   tableName: "posts",
   timestamps: false,
 });
+ 
 
 export default Post;

@@ -10,14 +10,29 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
   } from "@/components/ui/sidebar";
-import { Calendar, Inbox, Search, Settings , Home} from "lucide-react"; 
-import { useState } from "react";
+import { Calendar, Inbox, Search, Settings , Home, Bell , } from "lucide-react"; 
+import { useEffect, useState } from "react";
 import Link from 'next/link';
+import { signOut } from "next-auth/react";
+import { useParams, usePathname } from "next/navigation";
 
 
   
   
 export function AppSidebar() {
+
+  const pathname = usePathname();
+   
+  useEffect(() =>{
+    console.log("--->>>" , pathname);
+    const data : any = items.map(x => { 
+      x.active = x.url === pathname ? true : false; 
+      return x;
+    });
+
+    setItems([...data])
+    
+  } , [pathname])
 
     const [items, setItems] = useState([
         {
@@ -38,10 +53,16 @@ export function AppSidebar() {
           icon: Calendar,
           active : false
         },
+        // {
+        //   title: "Message",
+        //   url: "/message",
+        //   icon: Search,
+        //   active : false
+        // },
         {
-          title: "Message",
-          url: "/message",
-          icon: Search,
+          title: "Notification",
+          url: "/notification",
+          icon: Bell,
           active : false
         },
         {
@@ -81,6 +102,9 @@ export function AppSidebar() {
             </SidebarGroupContent> 
           </SidebarGroup>
         </SidebarContent>
+        <div className="text-center">
+          <button className=" border border-red-500 text-red-500 hover:text-white hover:bg-red-500 w-fit p-2 rounded-md shadow-md duration-200" onClick={() => signOut({callbackUrl : "/login"})}>Sign Out</button>
+        </div>
         <SidebarFooter />
       </Sidebar>
     )

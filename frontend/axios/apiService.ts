@@ -7,3 +7,11 @@ export const  baseHttp = axios.create({
     "Content-Type": "application/json",
   },
 }); 
+
+export const  notificationHttp = axios.create({
+  baseURL: "http://localhost:3001/notifications/",
+  timeout: 10000, // Timeout in milliseconds
+  headers: {
+    "Content-Type": "application/json",
+  },
+}); 

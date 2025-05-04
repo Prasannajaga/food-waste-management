@@ -1,100 +1,111 @@
-// src/routes/claimRoutes.ts
 import { Router } from 'express';
 import  Claim  from '../models/claim';
+import { User } from '../models';
+import { createNotification } from '../service/notificationService';
 
 const router = Router();
-
-// Create
-// This route creates a new claim and returns the newly created claim
-router.post('/create', async (req, res) => {
-  try {
-    // Create a new claim with the data sent in the request body
-    const claim = await Claim.create();
-    // Return the newly created claim
-    res.json(claim);
+ 
+router.post('/', async (req, res) => {
+  try { 
+    const data = req.body;
+    const claim = await Claim.create(data);
+    createNotification({
+      recipient_id: data.recipient_id,
+      sender_id : data.claimer_id,
+      type: 'CLAIMS',
+      reference_id: data.post_id,
+      message: "Claimed your food"
+    });
+  res.json(claim);
   } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
-    res.status(500).json({ message: 'Error creating claim' });
+     res.status(500).json({ message: 'Error creating claim' , error : error});
   }
-});
+}); 
 
-// Read
-// This route fetches all claims from the database and returns them
-router.get('/claims', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    // Fetch all claims from the database
     const claims = await Claim.findAll();
-    // Return all claims
     res.json(claims);
   } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
     res.status(500).json({ message: 'Error fetching claims' });
   }
 });
 
-// Read by ID
-// This route fetches a claim by its id and returns it
-router.get('/claims/:id', async (req, res) => {
+router.get('/post/:postId', async (req, res) => {
   try {
-    // Get the id of the claim from the request params
+    const post_id = req.params.postId;
+
+    const claims = await Claim.findAll({
+      where: {
+        post_id: post_id,
+      },
+      include: [
+        {
+          model: User,
+          as: 'claimer',
+          attributes: ['name' , "user_id"],
+        },
+      ],
+    attributes: ['claimed_at' , 'status' , "claim_id"],
+    });
+
+    res.json(claims);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching claims' , error : error});
+  }
+});
+
+
+router.get('/:id', async (req, res) => {
+  try {
     const id = req.params.id;
-    // Fetch the claim with the given id
     const claim = await Claim.findByPk(id);
-    // If the claim is not found, return a 404 status code and a JSON object with an error message
     if (!claim) {
       res.status(404).json({ message: 'Claim not found' });
     } else {
-      // If the claim is found, return it
       res.json(claim);
     }
   } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
     res.status(500).json({ message: 'Error fetching claim' });
   }
 });
+ 
 
-// Update
-// This route updates a claim and returns the updated claim
-router.put('/claims/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
-    // Get the id of the claim from the request params
     const id = req.params.id;
-    // Fetch the claim with the given id
     const claim = await Claim.findByPk(id);
-    // If the claim is not found, return a 404 status code and a JSON object with an error message
     if (!claim) {
       res.status(404).json({ message: 'Claim not found' });
     } else {
-      // If the claim is found, update it with the data sent in the request body
-      await claim.update(req.body);
-      // Return the updated claim
+      const data = req.body;
+      await claim.update(data);
+      createNotification({
+        recipient_id: data.recipient_id,
+        sender_id: data.sender_id,
+        type: 'CLAIMS',
+        reference_id: data.post_id,
+        message: "accepted your Claim." 
+      }); 
       res.json(claim);
     }
   } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
     res.status(500).json({ message: 'Error updating claim' });
   }
 });
+ 
 
-// Delete
-// This route deletes a claim and returns a success message
-router.delete('/claims/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-    // Get the id of the claim from the request params
     const id = req.params.id;
-    // Fetch the claim with the given id
     const claim = await Claim.findByPk(id);
-    // If the claim is not found, return a 404 status code and a JSON object with an error message
     if (!claim) {
       res.status(404).json({ message: 'Claim not found' });
     } else {
-      // If the claim is found, delete it
       await claim.destroy();
-      // Return a success message
       res.json({ message: 'Claim deleted successfully' });
     }
   } catch (error) {
-    // If there's an error, return a 500 status code and a JSON object with an error message
     res.status(500).json({ message: 'Error deleting claim' });
   }
 });

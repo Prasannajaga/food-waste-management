@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/dbClient"; 
+import Post from "./Post";
   
 
 const User = sequelize.define("User", {
@@ -36,6 +37,7 @@ const User = sequelize.define("User", {
   tableName: "users",  // Explicitly setting table name
   timestamps: false,    // Since we already have created_at and updated_at manually
 });
+   
 
 export default User;
 
