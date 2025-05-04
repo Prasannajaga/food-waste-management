@@ -72,7 +72,25 @@ erDiagram
       text comment
       timestamp created_at
     }
-    
+
+    LIKES {
+      int like_id PK "Primary Key"
+      int post_id FK "References POSTS"
+      int user_id FK "References USERS"
+      timestamp liked_at
+    }
+
+    NOTIFICATIONS {
+      int notification_id PK "Primary Key"
+      int recipient_id FK "References USERS"
+      int sender_id FK "References USERS"
+      varchar type "e.g., comment, like, claim"
+      int reference_id "Can be post_id, comment_id, etc."
+      text message
+      boolean is_read
+      timestamp created_at
+    }
+
     USERS ||--o{ POSTS : "creates"
     POSTS ||--o{ CLAIMS : "has"
     USERS ||--o{ CLAIMS : "claims"
