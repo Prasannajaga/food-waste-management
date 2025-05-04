@@ -96,6 +96,10 @@ erDiagram
     USERS ||--o{ CLAIMS : "claims"
     POSTS ||--o{ COMMENTS : "receives"
     USERS ||--o{ COMMENTS : "writes"
+    POSTS ||--o{ LIKES : "liked by"
+    USERS ||--o{ LIKES : "likes"
+    USERS ||--o{ NOTIFICATIONS : "receives"
+    USERS ||--o{ NOTIFICATIONS : "sends"
 ```
 
 
