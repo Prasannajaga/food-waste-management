@@ -17,7 +17,7 @@ FoodWasteManager is a social platform that connects food donors with nearby indi
   Secure sign-up and login for both donors and recipients.
 - **Post Creation:**  
   Donors can create posts that include descriptions, images, and geolocation data.
-- **Google Maps Integration:**  
+- **Google Maps Integration(WIP):** 
   Enables users to pinpoint the exact location of food donations.
 - **Claim Management:**  
   Recipients can claim available posts, and the system tracks the status of each post.
@@ -26,10 +26,10 @@ FoodWasteManager is a social platform that connects food donors with nearby indi
 
 ## Technology Stack
 
-- **Frontend:**  Next.js
-- **Backend:**  Node.js
-- **Database:**  PostgreSQL
-- **Other Tools:** Google Maps API, clear authentication
+- **Frontend:**  Next.js, next-auth, tailwind
+- **Backend:**  Node.js, Express, fastApi
+- **Database:**  PostgreSQL, MongoDb
+- **Other Tools:**  Sequel.js, motor, tortoise 
 
 ### ER Diagram
 
