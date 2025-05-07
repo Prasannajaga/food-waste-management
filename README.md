@@ -17,7 +17,7 @@ FoodWasteManager is a social platform that connects food donors with nearby indi
   Secure sign-up and login for both donors and recipients.
 - **Post Creation:**  
   Donors can create posts that include descriptions, images, and geolocation data.
-- **Google Maps Integration:**  
+- **Google Maps Integration(WIP):** 
   Enables users to pinpoint the exact location of food donations.
 - **Claim Management:**  
   Recipients can claim available posts, and the system tracks the status of each post.
@@ -26,10 +26,11 @@ FoodWasteManager is a social platform that connects food donors with nearby indi
 
 ## Technology Stack
 
-- **Frontend:**  Next.js
-- **Backend:**  Node.js
-- **Database:**  PostgreSQL
-- **Other Tools:** Google Maps API, clear authentication
+- **Frontend:**  Next.js, next-auth, tailwind
+- **Backend:**  Node.js, Express, fastApi
+- **Database:**  PostgreSQL, MongoDb
+- **Other Tools:**  Sequel.js, motor, tortoise
+
 
 ### ER Diagram
 
@@ -100,10 +101,9 @@ erDiagram
     USERS ||--o{ LIKES : "likes"
     USERS ||--o{ NOTIFICATIONS : "receives"
     USERS ||--o{ NOTIFICATIONS : "sends"
-```
+``` 
 
-
-### System Design 
+### System Design (low level)
 
 ```mermaid
     graph LR
@@ -157,3 +157,90 @@ erDiagram
 
 
 ```
+
+### System Design (High Level)
+
+```mermaid
+ graph LR
+    %% Define Components
+    A[End Users<br>Web/Mobile]:::client
+    subgraph AWS Cloud
+        subgraph networking
+            B[CloudFront<br>CDN]:::cdn
+            D[API Gateway]:::gateway
+            E[ALB]:::lb
+        end
+        subgraph blob storage
+            C[S3<br>Static Assets]:::storage
+        end
+        subgraph backend
+            F((Express.js)):::compute
+            G((FastAPI)):::compute
+        end
+        subgraph messaging queues
+            H[SQS<br>Events]:::queue
+        end
+        subgraph db
+            I[RDS<br>PostgreSQL]:::db
+            J[DocumentDB<br>MongoDB]:::db
+        end
+        subgraph logging
+            K[CloudWatch<br>Monitoring]:::monitor
+        end
+        subgraph security
+            L[IAM<br>Security]:::security
+        end
+    end
+
+    %% Connections
+    A -->|HTTPS| B
+    B -->|Static Content| C
+    B -->|Dynamic Requests| D
+    D -->|Route| E
+    E -->|Distribute| F
+    E -->|Distribute| G
+    F -->|Read/Write| I
+    F -->|Read/Write| C
+    G -->|Read/Write| J
+    G -->|Check User| I
+    F -->|Send Events| H
+    G -->|Poll Events| H
+    G -->|Notifications| D
+    F -->|Logs| K
+    G -->|Logs| K
+    I -->|Logs| K
+    J -->|Logs| K
+    L -->|Secure| F
+    L -->|Secure| G
+    L -->|Secure| I
+    L -->|Secure| J
+    L -->|Secure| C
+
+    %% Styling
+    classDef client fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px,stroke-dasharray:5,5,rx:15,ry:15,color:#333333
+    classDef cdn fill:#bbdefb,stroke:#1976d2,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef storage fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef gateway fill:#90caf9,stroke:#1565c0,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef lb fill:#64b5f6,stroke:#0d47a1,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef compute fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,rx:25,ry:25,color:#333333
+    classDef queue fill:#fce4ec,stroke:#d81b60,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef db fill:#ffcdd2,stroke:#c62828,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef monitor fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef security fill:#b2dfdb,stroke:#00695c,stroke-width:2px,rx:15,ry:15,color:#333333
+
+    %% Link Styling
+    linkStyle 0 stroke:#0d47a1,stroke-width:2px
+    linkStyle 1 stroke:#388e3c,stroke-width:2px
+    linkStyle 2 stroke:#1976d2,stroke-width:2px
+    linkStyle 3 stroke:#1565c0,stroke-width:2px
+    linkStyle 4,5 stroke:#0d47a1,stroke-width:2px
+    linkStyle 6,9 stroke:#c62828,stroke-width:2px
+    linkStyle 7 stroke:#388e3c,stroke-width:2px
+    linkStyle 8 stroke:#d81b60,stroke-width:2px
+    linkStyle 10,11 stroke:#ef6c00,stroke-width:2px
+    linkStyle 12 stroke:#1565c0,stroke-width:2px
+    linkStyle 13,14,15,16 stroke:#7b1fa2,stroke-width:2px
+    linkStyle 17,18,19,20,21 stroke:#00695c,stroke-width:2px
+
+```
+
