@@ -67,11 +67,12 @@ export default function PostCard({ posts : postData, user}: any) {
 
     const onComment = async (index: number, e: any) => {
         console.log("User pressed Enter:", e.target.value, posts[index], userData);
+        const postData  = posts[index];
         const data = {
             user_id: userData.user_id,
-            post_id: posts[index].post_id,
+            post_id: postData.post_id,
             comment: e.target.value,
-            recipient_id : posts[index].User.user_id
+            recipient_id : postData.User.user_id
         };
         const response = await baseHttp.post("/post/comments", data);
         e.target.value = "";
@@ -80,13 +81,24 @@ export default function PostCard({ posts : postData, user}: any) {
 
     const onLikes = async (index: number) => {
         console.log("on like");
+        const postData  = posts[index];
         const data = {
             user_id: userData.user_id,
-            post_id: posts[index].post_id,
-            recipient_id : posts[index].User.user_id
+            post_id: postData.post_id,
+            recipient_id : postData.User.user_id
         };
         const response = await baseHttp.post("/post/likes", data);
-        console.log("response ", response);
+        const likes = postData.Likes ?? [];
+
+        if(response.data && response.data.length === 0){
+            postData.Likes = likes. filter((x:any) => (x.user_id != data.user_id));
+        } 
+        else if(response.data){
+            postData.Likes = [{user_id : response.data.user_id}]; 
+        } 
+        setPost((prev:any) => {
+            return [...posts]
+        }); 
     }
 
 

@@ -107,7 +107,7 @@ export default function Notification(){
                     ) )}
                  </section>
                 :
-                <div className="text-center">No notifications found ...</div> 
+                <div className="text-center mt-10">No notifications found ...</div> 
             }
            
 

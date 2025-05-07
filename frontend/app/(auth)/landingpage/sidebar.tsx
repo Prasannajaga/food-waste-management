@@ -14,7 +14,7 @@ import { Calendar, Inbox, Search, Settings , Home, Bell , } from "lucide-react";
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { signOut } from "next-auth/react";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 
   
@@ -22,10 +22,10 @@ import { useParams, usePathname } from "next/navigation";
 export function AppSidebar() {
 
   const pathname = usePathname();
+  
    
   useEffect(() =>{
-    console.log("--->>>" , pathname);
-    const data : any = items.map(x => { 
+     const data : any = items.map(x => { 
       x.active = x.url === pathname ? true : false; 
       return x;
     });
@@ -53,12 +53,12 @@ export function AppSidebar() {
           icon: Calendar,
           active : false
         },
-        // {
-        //   title: "Message",
-        //   url: "/message",
-        //   icon: Search,
-        //   active : false
-        // },
+        {
+          title: "Message",
+          url: "/message",
+          icon: Search,
+          active : false
+        },
         {
           title: "Notification",
           url: "/notification",

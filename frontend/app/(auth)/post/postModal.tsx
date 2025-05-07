@@ -22,13 +22,13 @@ export default function PostModal({userData,postCallbk, initial}:any) {
   const [minDateTime, setMinDateTime] = useState("");
   const [maxDateTime, setMaxDateTime] = useState("");
   const [open, setOpen] = useState(initial);
-
-  const [formData , setFormData] = useState({ 
+  const defaultData = { 
     title : "",
     description : "",
     expires_in : new Date().toISOString().slice(0, 16)
-  });
+  };
 
+  const [formData , setFormData] = useState(defaultData); 
   useEffect(() => { 
     const now = new Date();
     const formatDate = (date: Date) => {
@@ -62,6 +62,7 @@ export default function PostModal({userData,postCallbk, initial}:any) {
         })
         postCallbk(payload.user_id);
         setOpen(false);
+        setFormData(defaultData);
     }
   }
 

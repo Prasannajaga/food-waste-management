@@ -3,14 +3,12 @@ import { baseHttp } from "@/axios/apiService";
 import PostCard from "../post/postcard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-
+import { useSession } from "next-auth/react";  
 export default function Contribution() {
     const [posts, setPosts] = useState<any[]>([]);
     const router = useRouter();
     const { data, status } = useSession<any>();
-    const [userData, setUser] = useState<any>({});
-
+    const [userData, setUser] = useState<any>({}); 
 
     useEffect(() => {
         if (data?.user) {

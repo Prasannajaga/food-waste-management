@@ -12,7 +12,7 @@ export default function postDetails() {
 
     useEffect(() =>{
         getPosts();
-    }, []);
+    }, []); 
 
     async function getPosts() {
         const response = await baseHttp.get("/posts/"+postId);
