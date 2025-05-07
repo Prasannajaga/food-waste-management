@@ -11,14 +11,14 @@ const findPosts = async (user_id ?: string) => {
           },
           {
             model: Likes,
-            as: 'Likes', // Alias to match hasMany association
-            attributes: ["user_id"], // No attributes needed, only for counting
+            as: 'Likes',  
+            attributes: ["user_id"],  
           },
           {
             model: Comment,
-            as: 'Comments', // Alias to match hasMany association
+            as: 'Comments',  
             attributes: ['comment_id', 'comment', 'created_at'],
-            required: false, // LEFT JOIN to include posts without comments
+            required: false, 
             include: [
               {
                 model: User,
@@ -56,11 +56,13 @@ const findPosts = async (user_id ?: string) => {
           'Comments->User.user_id',
           'Comments->User.name',
         ],
+        order: [['created_at', 'DESC']]
     };
 
     if(user_id){
         query.where = {user_id};
     }
+    
     return await Post.findAll(query);
 }
 

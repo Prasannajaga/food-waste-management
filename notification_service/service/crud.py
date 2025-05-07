@@ -1,7 +1,7 @@
-from database import notification_collection
-from models import NotificationModel
+from NOSQL.database import notification_collection
+from NOSQL.models import NotificationModel
 from bson.objectid import ObjectId
-from schemas import CreateNotificationSchema
+from NOSQL.schemas import CreateNotificationSchema
 
 
 async def create_notification(data: CreateNotificationSchema):

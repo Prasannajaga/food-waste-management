@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from service.crud import create_notification, get_user_notifications, mark_as_read
-from schemas import CreateNotificationSchema
-from sql_models import User
+from NOSQL.schemas import CreateNotificationSchema
+from SQL.sql_models import User
+from NOSQL.database import notification_collection
+
 
 router = APIRouter()
 
@@ -12,6 +14,13 @@ async def user_exists(user_id: int) -> bool:
 async def notify(data: CreateNotificationSchema):
     sender_id = data.sender_id
     recipient_id = data.recipient_id 
+
+    isExists = await notification_collection.find_one({"recipient_id" : data.recipient_id , "sender_id" : data.sender_id , "type" : data.type , "reference_id" : data.reference_id})
+
+    if isExists != None:
+        print("exists " , isExists)
+        return
+
 
     try:
         sender = await User.get(user_id=sender_id)

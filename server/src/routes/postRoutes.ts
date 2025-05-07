@@ -19,6 +19,9 @@ try {
   if(!payload.expires_in){
     res.status(404).json({message : "userId is required"});
   }
+  
+  payload.created_at = new Date();
+  payload.updated_at = new Date();
 
   const post = await Post.create(payload); 
   res.status(200).json(post);

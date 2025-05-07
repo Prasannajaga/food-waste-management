@@ -2,12 +2,15 @@
 import { Router } from 'express';
 import  Comment  from '../models/comment';
 import { createNotification } from '../service/notificationService';
+import { User } from '../models';
 
 const router = Router();
  
 router.post('/', async (req, res) => {
   try { 
     const data = req.body;
+    data.created_at = new Date();
+
     const comment = await Comment.create(data);
     createNotification({
         recipient_id: data.recipient_id,
@@ -49,7 +52,11 @@ router.get('/byPost/:id', async (req, res) => {
   try { 
     const id = req.params.id; 
     const comment = await Comment.findAll({
-      where : {post_id : id}
+      where : {post_id : id},
+      include : {
+        model : User,
+        attributes : ["name"]
+      }
     });
     
      if (!comment) {

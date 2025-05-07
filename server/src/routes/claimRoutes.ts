@@ -8,6 +8,8 @@ const router = Router();
 router.post('/', async (req, res) => {
   try { 
     const data = req.body;
+    data.claimed_at = new Date();
+    
     const claim = await Claim.create(data);
     createNotification({
       recipient_id: data.recipient_id,
@@ -16,7 +18,7 @@ router.post('/', async (req, res) => {
       reference_id: data.post_id,
       message: "Claimed your food"
     });
-  res.json(claim);
+    res.json(claim);
   } catch (error) {
      res.status(500).json({ message: 'Error creating claim' , error : error});
   }
