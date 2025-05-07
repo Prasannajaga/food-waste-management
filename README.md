@@ -31,60 +31,6 @@ FoodWasteManager is a social platform that connects food donors with nearby indi
 - **Database:**  PostgreSQL, MongoDb
 - **Other Tools:**  Sequel.js, motor, tortoise
 
-### System Design 
-
-```mermaid
-    graph LR
-    %% Define Components
-    A[User Interface]:::ui
-    subgraph Express.js Server
-        B((Express.js)):::server
-        subgraph Express Services
-            C[userService]:::service
-            D[postService]:::service
-            E[likeService]:::service
-            F[commentService]:::service
-            G[claimService]:::service
-        end
-    end
-    subgraph FastAPI Server
-        H((FastAPI)):::server
-        I[notificationService]:::service
-    end
-    J[(PostgreSQL)]:::db
-    K[(MongoDB)]:::db
-
-    %% Connections
-    A -->|HTTP Requests| B
-    A -->|Fetch Notifications| H
-    B -->|HTTP Requests| C
-    B -->|HTTP Requests| D
-    B -->|HTTP Requests| E
-    B -->|HTTP Requests| F
-    B -->|HTTP Requests| G
-    C -->|Store Data| J
-    D -->|Store Data| J
-    E -->|Store Data| J
-    F -->|Store Data| J
-    G -->|Store Data| J
-    B -->|Send Notification Event| H
-    H -->|HTTP Requests| I
-    I -->|Store Notifications| K
-    H -->|Return Notifications| A
-    I <-->|check if user exists| J  
-
-    %% Styling
-    classDef ui fill:#e0f7fa,stroke:#00796b,stroke-width:2px,color:#333333
-    classDef server fill:#bbdefb,stroke:#1976d2,stroke-width:2px,color:#333333
-    classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#333333
-    classDef db fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#333333
-    linkStyle 0,12 stroke:#00796b,stroke-width:2px
-    linkStyle 1,13 stroke:#1976d2,stroke-width:2px
-    linkStyle 2,3,4,5,6 stroke:#f57c00,stroke-width:2px
-    linkStyle 7,8,9,10,11,14,16 stroke:#c2185b,stroke-width:2px
-
-
-```
 
 ### ER Diagram
 
@@ -156,3 +102,145 @@ erDiagram
     USERS ||--o{ NOTIFICATIONS : "receives"
     USERS ||--o{ NOTIFICATIONS : "sends"
 ``` 
+
+### System Design (low level)
+
+```mermaid
+    graph LR
+    %% Define Components
+    A[User Interface]:::ui
+    subgraph Express.js Server
+        B((Express.js)):::server
+        subgraph Express Services
+            C[userService]:::service
+            D[postService]:::service
+            E[likeService]:::service
+            F[commentService]:::service
+            G[claimService]:::service
+        end
+    end
+    subgraph FastAPI Server
+        H((FastAPI)):::server
+        I[notificationService]:::service
+    end
+    J[(PostgreSQL)]:::db
+    K[(MongoDB)]:::db
+
+    %% Connections
+    A -->|HTTP Requests| B
+    A -->|Fetch Notifications| H
+    B -->|HTTP Requests| C
+    B -->|HTTP Requests| D
+    B -->|HTTP Requests| E
+    B -->|HTTP Requests| F
+    B -->|HTTP Requests| G
+    C -->|Store Data| J
+    D -->|Store Data| J
+    E -->|Store Data| J
+    F -->|Store Data| J
+    G -->|Store Data| J
+    B -->|Send Notification Event| H
+    H -->|HTTP Requests| I
+    I -->|Store Notifications| K
+    H -->|Return Notifications| A
+    I <-->|check if user exists| J  
+
+    %% Styling
+    classDef ui fill:#e0f7fa,stroke:#00796b,stroke-width:2px,color:#333333
+    classDef server fill:#bbdefb,stroke:#1976d2,stroke-width:2px,color:#333333
+    classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#333333
+    classDef db fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#333333
+    linkStyle 0,12 stroke:#00796b,stroke-width:2px
+    linkStyle 1,13 stroke:#1976d2,stroke-width:2px
+    linkStyle 2,3,4,5,6 stroke:#f57c00,stroke-width:2px
+    linkStyle 7,8,9,10,11,14,16 stroke:#c2185b,stroke-width:2px
+
+
+```
+
+### System Design (High Level)
+
+```mermaid
+ graph LR
+    %% Define Components
+    A[End Users<br>Web/Mobile]:::client
+    subgraph AWS Cloud
+        subgraph networking
+            B[CloudFront<br>CDN]:::cdn
+            D[API Gateway]:::gateway
+            E[ALB]:::lb
+        end
+        subgraph blob storage
+            C[S3<br>Static Assets]:::storage
+        end
+        subgraph backend
+            F((Express.js)):::compute
+            G((FastAPI)):::compute
+        end
+        subgraph messaging queues
+            H[SQS<br>Events]:::queue
+        end
+        subgraph db
+            I[RDS<br>PostgreSQL]:::db
+            J[DocumentDB<br>MongoDB]:::db
+        end
+        subgraph logging
+            K[CloudWatch<br>Monitoring]:::monitor
+        end
+        subgraph security
+            L[IAM<br>Security]:::security
+        end
+    end
+
+    %% Connections
+    A -->|HTTPS| B
+    B -->|Static Content| C
+    B -->|Dynamic Requests| D
+    D -->|Route| E
+    E -->|Distribute| F
+    E -->|Distribute| G
+    F -->|Read/Write| I
+    F -->|Read/Write| C
+    G -->|Read/Write| J
+    G -->|Check User| I
+    F -->|Send Events| H
+    G -->|Poll Events| H
+    G -->|Notifications| D
+    F -->|Logs| K
+    G -->|Logs| K
+    I -->|Logs| K
+    J -->|Logs| K
+    L -->|Secure| F
+    L -->|Secure| G
+    L -->|Secure| I
+    L -->|Secure| J
+    L -->|Secure| C
+
+    %% Styling
+    classDef client fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px,stroke-dasharray:5,5,rx:15,ry:15,color:#333333
+    classDef cdn fill:#bbdefb,stroke:#1976d2,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef storage fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef gateway fill:#90caf9,stroke:#1565c0,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef lb fill:#64b5f6,stroke:#0d47a1,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef compute fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,rx:25,ry:25,color:#333333
+    classDef queue fill:#fce4ec,stroke:#d81b60,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef db fill:#ffcdd2,stroke:#c62828,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef monitor fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px,rx:15,ry:15,color:#333333
+    classDef security fill:#b2dfdb,stroke:#00695c,stroke-width:2px,rx:15,ry:15,color:#333333
+
+    %% Link Styling
+    linkStyle 0 stroke:#0d47a1,stroke-width:2px
+    linkStyle 1 stroke:#388e3c,stroke-width:2px
+    linkStyle 2 stroke:#1976d2,stroke-width:2px
+    linkStyle 3 stroke:#1565c0,stroke-width:2px
+    linkStyle 4,5 stroke:#0d47a1,stroke-width:2px
+    linkStyle 6,9 stroke:#c62828,stroke-width:2px
+    linkStyle 7 stroke:#388e3c,stroke-width:2px
+    linkStyle 8 stroke:#d81b60,stroke-width:2px
+    linkStyle 10,11 stroke:#ef6c00,stroke-width:2px
+    linkStyle 12 stroke:#1565c0,stroke-width:2px
+    linkStyle 13,14,15,16 stroke:#7b1fa2,stroke-width:2px
+    linkStyle 17,18,19,20,21 stroke:#00695c,stroke-width:2px
+
+```
+
