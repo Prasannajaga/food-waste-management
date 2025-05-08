@@ -2,9 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Inter', sans-serif;
+/* For Chrome, Edge, and Safari */
+* {
+  scrollbar-width: thin;              /* For Firefox */
+  scrollbar-color: #999 transparent;  /* Firefox color */
 }
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #999;
+  border-radius: 4px;
+}
+
+
+
+
+body {
+  font-family: 'Lato', sans-serif;
+}
+
 
 @layer base {
   :root {

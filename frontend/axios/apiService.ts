@@ -15,3 +15,11 @@ export const  notificationHttp = axios.create({
     "Content-Type": "application/json",
   },
 }); 
+
+export const  chatHttp = axios.create({
+  baseURL: "http://localhost:3001/chat/",
+  timeout: 10000, // Timeout in milliseconds
+  headers: {
+    "Content-Type": "application/json",
+  },
+}); 

@@ -214,7 +214,7 @@ export default function PostCard({ posts : postData, user}: any) {
                                     <RefreshCw onClick={() => onCommentRefresh(index)}/>
                                 </section>
 
-                                <section className="flex flex-col gap-2">
+                                <section className="flex flex-col gap-2 h-72 overflow-auto">
                                     {item.Comments.length > 0 ?
                                         <>
                                             {item.Comments.map((x: any) => (

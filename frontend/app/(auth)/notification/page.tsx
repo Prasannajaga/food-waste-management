@@ -42,7 +42,7 @@ export default function Notification(){
         <>  
             <section className="flex gap-2">
                 {filters.map((x , index) =>(
-                    <label key={x} onClick={() => onSelect(x)} className={`p-2 border border-primary/30 bg-white rounded-lg shadow-md pace-x-3 hover:bg-gray-50 transition ${selectedFilter === x && "!bg-primary text-white"}`}>{x}</label>
+                    <label key={x} onClick={() => onSelect(x)} className={`p-1 px-2 border text-sm border-primary/30 bg-white rounded-lg shadow-md pace-x-3 hover:bg-gray-50 transition ${selectedFilter === x && "!bg-primary text-white"}`}>{x}</label>
                 ))}    
             </section>
             { notifications.length > 0 ?

@@ -32,7 +32,8 @@ export default function LandingPage() {
           setUser({
             ...data.user,
             user_id : (data.user as any).id
-        });
+          }); 
+          localStorage.setItem("user" , JSON.stringify(data.user));
         }
     }, [data]); 
 

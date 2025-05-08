@@ -15,11 +15,11 @@ async def notify(data: CreateNotificationSchema):
     sender_id = data.sender_id
     recipient_id = data.recipient_id 
 
-    isExists = await notification_collection.find_one({"recipient_id" : data.recipient_id , "sender_id" : data.sender_id , "type" : data.type , "reference_id" : data.reference_id})
-
-    if isExists != None:
-        print("exists " , isExists)
-        return
+    if data.type.__eq__("LIKES") or data.type.__eq__("CLAIMS"):  
+        isExists = await notification_collection.find_one({"recipient_id" : data.recipient_id , "sender_id" : data.sender_id , "type" : data.type , "reference_id" : data.reference_id})
+        if isExists != None:
+            print("exists " , isExists)
+            return
 
 
     try:
