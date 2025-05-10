@@ -35,7 +35,7 @@ FoodWasteManager is a social platform that connects food donors with nearby indi
 ### ER Diagram
 
 ```mermaid
-erDiagram
+ erDiagram
     USERS {
       int user_id PK "Primary Key"
       varchar name
@@ -85,11 +85,29 @@ erDiagram
       int notification_id PK "Primary Key"
       int recipient_id FK "References USERS"
       int sender_id FK "References USERS"
-      varchar type "e.g., comment, like, claim"
-      int reference_id "Can be post_id, comment_id, etc."
+      varchar type "e.g., comment, like, claim, message"
+      int reference_id "Can be post_id, comment_id, chat_id, etc."
       text message
       boolean is_read
       timestamp created_at
+    }
+
+    CHATS {
+      int chat_id PK "Primary Key"
+      int initiator_id FK "References USERS"
+      int recipient_id FK "References USERS"
+      int post_id FK "References POSTS, nullable"
+      timestamp created_at
+      timestamp updated_at
+    }
+
+    MESSAGES {
+      int message_id PK "Primary Key"
+      int chat_id FK "References CHATS"
+      int sender_id FK "References USERS"
+      text content
+      timestamp sent_at
+      boolean is_read
     }
 
     USERS ||--o{ POSTS : "creates"
@@ -101,6 +119,11 @@ erDiagram
     USERS ||--o{ LIKES : "likes"
     USERS ||--o{ NOTIFICATIONS : "receives"
     USERS ||--o{ NOTIFICATIONS : "sends"
+    USERS ||--o{ CHATS : "initiates"
+    USERS ||--o{ CHATS : "receives"
+    POSTS ||--o{ CHATS : "referenced by"
+    CHATS ||--o{ MESSAGES : "contains"
+    USERS ||--o{ MESSAGES : "sends"
 ``` 
 
 ### System Design (low level)
