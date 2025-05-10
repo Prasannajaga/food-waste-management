@@ -102,7 +102,7 @@ erDiagram
     USERS ||--o{ NOTIFICATIONS : "receives"
     USERS ||--o{ NOTIFICATIONS : "sends"
 ``` 
-
+C
 ### System Design (low level)
 
 ```mermaid
@@ -122,6 +122,8 @@ erDiagram
     subgraph FastAPI Server
         H((FastAPI)):::server
         I[notificationService]:::service
+        CH[chatService]:::service
+        WS[websocket]:::service
     end
     J[(PostgreSQL)]:::db
     K[(MongoDB)]:::db
@@ -129,6 +131,7 @@ erDiagram
     %% Connections
     A -->|HTTP Requests| B
     A -->|Fetch Notifications| H
+    A -->|post/retrieve chat| H
     B -->|HTTP Requests| C
     B -->|HTTP Requests| D
     B -->|HTTP Requests| E
@@ -141,6 +144,8 @@ erDiagram
     G -->|Store Data| J
     B -->|Send Notification Event| H
     H -->|HTTP Requests| I
+    H -->|HTTP Requests| CH
+    H -->|udp| WS
     I -->|Store Notifications| K
     H -->|Return Notifications| A
     I <-->|check if user exists| J  
@@ -150,10 +155,10 @@ erDiagram
     classDef server fill:#bbdefb,stroke:#1976d2,stroke-width:2px,color:#333333
     classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#333333
     classDef db fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#333333
-    linkStyle 0,12 stroke:#00796b,stroke-width:2px
-    linkStyle 1,13 stroke:#1976d2,stroke-width:2px
-    linkStyle 2,3,4,5,6 stroke:#f57c00,stroke-width:2px
-    linkStyle 7,8,9,10,11,14,16 stroke:#c2185b,stroke-width:2px
+    linkStyle 0 stroke:#00796b,stroke-width:2px
+    linkStyle 1,2,13 stroke:#1976d2,stroke-width:2px
+    linkStyle 3,4,5,6 stroke:#f57c00,stroke-width:2px
+    linkStyle 7,8,9,10,11,14,15,16,12 stroke:#c2185b,stroke-width:2px
 
 
 ```
