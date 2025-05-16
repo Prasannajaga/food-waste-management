@@ -23,22 +23,30 @@ def get_chat_query(sender_id , receiver_id):
         ]
     }
 
+
 @router.get("/user/{user_id}")
 async def get_chat_list(user_id: int):
     user_map = []
+    you_user = None
     try:
-        user = await User.all()
-        for u in user:
-                data = {
-                    "name" : "You" if u.user_id == user_id else u.name,
-                    "user_id" : u.user_id, 
-                    'last_message' : await get_last_message(user_id , u.user_id)
-                }
+        users = await User.all()
+        for u in users:
+            data = {
+                "name": "You" if u.user_id == user_id else u.name,
+                "user_id": u.user_id,
+                "last_message": await get_last_message(user_id, u.user_id)
+            }
+            if u.user_id == user_id:
+                you_user = data   
+            else:
                 user_map.append(data)
-    except erf:
-        print(erf)
-    
+        if you_user:
+            user_map.insert(0, you_user)  
+    except Exception as e:
+        print(e)
+
     return user_map
+
 
 async def get_last_message(sender_id: str, receiver_id: str):
     chat_query = {
@@ -52,7 +60,7 @@ async def get_last_message(sender_id: str, receiver_id: str):
     chat_doc = await chat_collection.find_one(chat_query, {"messages": {"$slice": -1}})
 
     if not chat_doc or "messages" not in chat_doc or not chat_doc["messages"]:
-        return  "No messages found"
+        return  "start the conversation"
 
     # Convert datetime to string for JSON serialization
     last_message = chat_doc["messages"][0] 

@@ -2,7 +2,7 @@ import { Comment, Likes, Post, User } from "../models";
 
 
 
-const findPosts = async (user_id ?: string) => {
+const findPosts = async (user_id ?: string | null, post_id ?: string) => {
     const query : any = { 
         include: [
           {
@@ -61,6 +61,10 @@ const findPosts = async (user_id ?: string) => {
 
     if(user_id){
         query.where = {user_id};
+    }
+
+    if(post_id){
+        query.where = {post_id};
     }
     
     return await Post.findAll(query);

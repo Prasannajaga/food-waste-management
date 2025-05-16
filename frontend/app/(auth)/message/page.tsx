@@ -32,40 +32,53 @@ export default function Message() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() =>{
-    const user = JSON.parse(localStorage.getItem('user') ?? "{}");
-    if(user){  
-      console.log();
-      
-      const ws = new WebSocket(`ws://localhost:3001/chat/${user.id}`);
-  
-      ws.onopen = () => {
-        console.log("WebSocket connected");
-      };
-  
-      ws.onmessage = (event) => {
-        const message = JSON.parse(event.data)
-        console.log("messages ", message);
-        setMessages((prev) => [...prev, message]);
-      };
-  
-      ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
-  
-      ws.onclose = () => {
-        console.log("WebSocket closed");
-      };
-  
-      return () => {
-        ws.close();
-      };
-
-    }
-
+  useEffect(() =>{
+    subscribeTopics();
   }, [])
 
-  useLayoutEffect(() => {
+  function subscribeTopics(){
+    try {
+         const user = JSON.parse(localStorage.getItem('user') ?? "{}");
+        if(user){  
+          console.log();
+          
+          const ws = new WebSocket(`ws://localhost:3001/chat/${user.id}`);
+      
+          ws.onopen = () => {
+            console.log("WebSocket connected");
+          };
+      
+          ws.onmessage = (event) => {
+            const message = JSON.parse(event.data)
+            console.log("messages ", message);
+            setMessages((prev) => [...prev, message]);
+          };
+      
+          ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+          };
+      
+          ws.onclose = () => {
+            console.log("WebSocket closed");
+          };
+      
+          return () => {
+            ws.close();
+          }; 
+        } 
+    } catch (error) {
+        console.log("error" , error);
+    }
+  }
+
+  useEffect(() => {
+  messagesEndRef.current?.scrollTo({
+    top: messagesEndRef.current.scrollHeight,
+    behavior: "smooth"
+  }); 
+}, [messages, selectedUser]);
+
+  useEffect(() => {
     if (data?.user) {
       const d = {
         ...data.user,
@@ -93,12 +106,7 @@ export default function Message() {
         setMessages(data);
       }
     }
-  }
-
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, selectedUser]);
+  } 
 
   // Toggle sidebar on mobile
   const toggleSidebar = () => {
@@ -114,23 +122,31 @@ export default function Message() {
   // Send message (placeholder)
   const sendMessage = async () => {
     if (!input.trim() || !selectedUser) return;
-    const newMessage: any = {
+    const payload: any = {
       "sender_id": userData?.user_id,
       "receiver_id": selectedUser?.user_id,
       "messages": input
     }
-    const response = await chatHttp.post("/create", newMessage);
-    console.log("response msg", response);
+    const response = await chatHttp.post("/create", payload); 
     if(response.data.status){
       const newMessage = response.data.data;  
       setMessages([...messages, newMessage]);
       setInput("");
+      getUsers(userData);
+      // setUserList(prev => {
+      //   return prev.map(x => {          
+      //     if(selectedUser.user_id === payload.receiver_id){
+      //       x.last_message = newMessage.message;
+      //     }
+      //     return x;
+      //   })
+      // });
     }
 
   };
 
   return (
-    <div className="container mx-auto bg-gray-50 shadow-md h-screen rounded-xl flex border">
+    <div className="container mx-auto bg-gray-50 shadow-md h-[calc(100vh-100px)] rounded-xl flex border">
       {/* Sidebar */}
       <section className={`fixed inset-y-0 left-0 w-80 bg-white border-r border-gray-200 transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0 md:static md:w-64 transition-transform duration-300 ease-in-out z-20`}
@@ -177,10 +193,10 @@ export default function Message() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 p-4 overflow-y-auto bg-white">
+            <div ref={messagesEndRef} className="flex-1 p-4 overflow-y-auto bg-white">
               {messages?.map((msg , index) => (
-                <div key={msg.chat_id} className={`flex ${msg.owner_id === userData?.user_id ? "justify-end" : "justify-start"} mb-4`}>
-                  <div className={`flex gap-2 max-w-lg p-3 rounded-lg ${msg.owner_id === userData?.user_id
+                <div  key={msg.chat_id} className={`flex ${msg.owner_id === userData?.user_id ? "justify-end" : "justify-start"} mb-4`}>
+                  <div className={`flex gap-2 max-w-lg p-2 rounded-lg ${msg.owner_id === userData?.user_id
                         ? "bg-primary/90 text-white"
                         : "bg-gray-200 text-gray-800"
                       }`}
@@ -191,8 +207,7 @@ export default function Message() {
                     </p>
                   </div>
                 </div>
-              ))}
-              <div ref={messagesEndRef} />
+              ))} 
             </div>
 
             {/* Input */}

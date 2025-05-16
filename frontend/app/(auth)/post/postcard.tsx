@@ -23,6 +23,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast";  
+import { redirect } from "next/navigation";
 
 export default function PostCard({ posts : postData, user}: any) {
 
@@ -131,7 +132,7 @@ export default function PostCard({ posts : postData, user}: any) {
                         <Card id={item} key={index} className="w-full" >
                             <CardHeader className="p-3"  >
                                 <CardDescription className="flex justify-between">
-                                    <section className="flex gap-2 items-center">
+                                    <section className="flex gap-2 items-center" onClick={() => redirect(`/post/${item.post_id}`)}>
                                         <Avatar className="w-[40px] h-[40px]">
                                             <AvatarImage className="rounded-full" src="https://github.com/shadcn.png" alt="@shadcn" />
                                             <AvatarFallback>CN</AvatarFallback>
