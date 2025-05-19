@@ -1,0 +1,50 @@
+
+services:
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://gateway:8090
+      - NODE_ENV=production 
+    networks:
+      - food-waste-network
+    restart: unless-stopped
+
+  # Node.js/Express Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgres://user:password@postgres:5432/food_waste_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - NODE_ENV=production 
+    networks:
+      - food-waste-network
+    restart: unless-stopped
+
+  # FastAPI Server
+  fastapi_server:
+    build:
+      context: ./fastapi_server
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgres://user:password@postgres:5432/food_waste_db
+      - MONGODB_URL=mongodb://mongo:27017/food_waste_nosql
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/ 
+    networks:
+      - food-waste-network
+    restart: unless-stopped 
+
+networks:
+  food-waste-network:
+    driver: bridge
+ 
