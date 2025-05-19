@@ -3,4 +3,4 @@
 # dependencies
 frontend/node_modules 
 server/node_modules 
-fastapi_server\__pycache__
+fastapi_server/__pycache__
