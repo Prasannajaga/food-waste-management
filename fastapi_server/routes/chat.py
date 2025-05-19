@@ -104,6 +104,10 @@ async def send_chat_message(data: ChatModel):
     return {"status": "Message sent", "data": message_doc }
 
 
+@router.get("/check")
+async def checkhealth():
+    return "health is good"
+
 @router.get("/messages")
 async def get_chat_messages(sender_id: int, receiver_id: int):
 

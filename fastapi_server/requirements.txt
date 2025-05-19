@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+httpx
+motor
+pydantic
+tortoise-orm
+asyncio
+python-dotenv
+asyncpg
