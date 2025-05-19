@@ -1,11 +1,10 @@
 "use client"
 import { notificationHttp } from "@/axios/apiService";
+import { formatDate } from "@/sharedComponents/service";
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 
-export function formatDate(date : string){
-    return new Date(date).toLocaleString("en-US" , {hour :"numeric" , minute :"numeric" })
-}
+
 
 export default function Notification(){
     

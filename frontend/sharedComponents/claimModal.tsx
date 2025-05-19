@@ -1,8 +1,8 @@
 "use client";
-import { formatDate } from "@/app/(auth)/notification/page";
 import { baseHttp } from "@/axios/apiService"; 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { formatDate } from "./service";
 
 export default function ClaimModal({ initial, postId , user }: any) {
     const [claims, setClaims] = useState<any[]>([]);

@@ -1,6 +1,6 @@
+import { authOptions } from "@/sharedComponents/service";
 import { Metadata } from "next"; 
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route"; 
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
 
-    const session = await getServerSession(authOptions as any);
+    const session = await getServerSession(authOptions);
 
     if(session){
         redirect("/landingpage");

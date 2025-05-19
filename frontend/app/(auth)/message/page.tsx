@@ -2,9 +2,8 @@
 import { baseHttp, chatHttp } from "@/axios/apiService";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession } from "next-auth/react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { formatDate } from "../notification/page";
-import { titleCase } from "@/sharedComponents/service";
+import { useEffect, useLayoutEffect, useRef, useState } from "react"; 
+import { formatDate, titleCase } from "@/sharedComponents/service";
 import { SendHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 

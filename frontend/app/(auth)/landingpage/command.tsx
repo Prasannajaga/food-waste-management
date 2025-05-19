@@ -3,17 +3,10 @@
 import {  
   CookingPot, 
 } from "lucide-react"
-
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList, 
-} from "@/components/ui/command"
+ 
 import {  useEffect, useState } from "react"
 import { DialogTitle } from "@/components/ui/dialog"
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "cmdk"
 
 export function CommandDialogDemo(props : any) {
   const [open, setOpen] = useState(false)
@@ -51,25 +44,29 @@ export function CommandDialogDemo(props : any) {
 
   return (
     <> 
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <DialogTitle className="hidden">Food Share</DialogTitle>
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+      {/* <CommandDialog open={open} onOpenChange={setOpen}> */}
+        {/* <DialogTitle className="hidden">Food Share</DialogTitle> */}
+        {/* <CommandInput   /> */}
+        {/* <CommandList> */}
+          {/* <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Suggestions">
              {(props?.data && props?.data.length > 0) && 
                 (props?.data.map((e:any) =>
                     (
-                        <CommandItem data-value={e} onDoubleClick={routeTo} key={e}>
-                        <CookingPot />
-                         <span data-value={e}>{e}</span>
+                        <CommandItem
+                          value={e}
+                          onSelect={() => routeTo({ target: { getAttribute: () => e } })}
+                          key={e}
+                        >
+                          <CookingPot />
+                          <span>{e}</span>
                         </CommandItem>
                     )
-                ))
-             } 
-          </CommandGroup> 
-        </CommandList>
-      </CommandDialog>
+                )) */}
+             {/* }  */}
+          {/* </CommandGroup>  */}
+        {/* </CommandList> */}
+      {/* </CommandDialog> */}
     </>
   )
 }

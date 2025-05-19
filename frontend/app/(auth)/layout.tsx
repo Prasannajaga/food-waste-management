@@ -1,13 +1,13 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"; 
 import { Toaster } from "@/components/ui/toaster";
 import { AppSidebar } from "./landingpage/sidebar"; 
 import SessionWrapper from "./session-wrapper"; 
+import { authOptions } from "@/sharedComponents/service";
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession(authOptions as any);
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     console.log("session " , session);
