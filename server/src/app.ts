@@ -7,7 +7,8 @@ import  postRoutes  from "./routes/postRoutes";
 import  claimRoutes  from "./routes/claimRoutes"; 
 import  commentRoutes  from "./routes/commentRoutes"; 
 import  likeRoutes from "./routes/likeRouters"; 
-import cors from "cors";
+import cors from "cors"; 
+import { registerWithEureka, sendHeartbeat } from './routes/eurekaClient';
 
 // Create express app
 const app = express(); 
@@ -26,13 +27,22 @@ app.use('/api/post/likes', likeRoutes);
 app.use('/api/post/comments', commentRoutes);
 
  
-app.get("/check", (req,res) =>{ 
-  res.send("SUCESS");
-})
+export const PORT = process.env.PORT || 5000; 
+
+
 // Start server on port 5000 and log message to console
-app.listen(5000, () => {
+app.listen(PORT, async () => {
   testConnection()
   console.log("Server is running on port 5000"); 
+  await registerWithEureka(PORT as number);
+  setInterval(sendHeartbeat, 30 * 1000);
 });
+
+app.get("/check", (req,res) =>{ 
+  res.send("SUCESS");
+});
+ 
+
+
 
 export default app;

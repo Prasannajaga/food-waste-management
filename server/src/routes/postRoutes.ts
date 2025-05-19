@@ -13,11 +13,11 @@ try {
   const payload = req.body;
 
   if(!payload.user_id){
-    res.status(404).json({message : "userId is required"});
+    res.status(404).json({message : "userId is required"}); 
   } 
 
   if(!payload.expires_in){
-    res.status(404).json({message : "userId is required"});
+    res.status(404).json({message : "userId is required"}); 
   }
   
   payload.created_at = new Date();
@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
      
     const user_id = req.query.userId ?? null; 
 
-    if(!user_id){
+    if(!user_id){ 
       res.status(409).json({message : "userId is required"})
     } 
 
@@ -60,7 +60,7 @@ router.get('/all', async (req, res) => {
     //     {
     //       model: Likes,
     //       as : "Likes",
-    //       attributes: [], 
+    //       attributes: [],  
     //     },
     //     {
     //       model: Comment,
