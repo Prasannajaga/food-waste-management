@@ -27,14 +27,14 @@ app.use('/api/post/likes', likeRoutes);
 app.use('/api/post/comments', commentRoutes);
 
  
-export const PORT = process.env.PORT || 5000; 
+export const PORT = process.env.PORT || 4002; 
 
 
 // Start server on port 5000 and log message to console
 app.listen(PORT, async () => {
   testConnection()
-  console.log("Server is running on port 5000"); 
-  await registerWithEureka(PORT as number);
+  console.log("Server is running on port " ,PORT); 
+  // await registerWithEureka(PORT as number);
   setInterval(sendHeartbeat, 30 * 1000);
 });
 

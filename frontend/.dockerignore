@@ -1,5 +1,7 @@
 node_modules
-npm-debug.log
+.git
 Dockerfile
 .dockerignore
-.env
+*.log
+next.config.js
+*.md
