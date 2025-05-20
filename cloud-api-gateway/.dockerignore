@@ -1,0 +1,27 @@
+# Maven/Gradle build artifacts
+target/
+build/
+
+# Git
+.git
+.gitignore
+
+# IDEs and editor configs
+*.iml
+.idea/
+*.vscode/
+*.swp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+# Docker files (optional if you want to keep it light)
+docker-compose.yml
+Dockerfile
