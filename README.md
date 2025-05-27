@@ -125,7 +125,7 @@ FoodWasteManager is a social platform that connects food donors with nearby indi
     CHATS ||--o{ MESSAGES : "contains"
     USERS ||--o{ MESSAGES : "sends"
 ``` 
-C
+
 ### System Design (low level)
 
 ```mermaid
